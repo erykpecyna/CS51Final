@@ -9,5 +9,9 @@ open Util ;;
     necessitate their ability to be drawn on the screen
 .............................................................................*)
 
-class virtual drawable (p : point)
+class virtual drawable (p : point) =
+    object (this)
+        val pos : point = p
+        method virtual draw : unit
+    end
 
