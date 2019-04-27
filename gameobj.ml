@@ -9,20 +9,37 @@ open Util ;;
   necessitate their ability to be drawn on the screen
 .............................................................................*)
 
-class virtual drawable (p : point) =
+class virtual drawable (p : point)
+                       (w : int)
+                       (h : int) =
   object (this)
     val pos : point = p
+    val width : int = w
+    val height : int = h
     method virtual draw : unit
   end 
 
-class bomb (m : point) =
+class wall (p : point)
+           (w : int)
+           (h : int) =
   object
-    inherit drawable m
-    (* val radius : int = r *)
-    
-    method draw = ()
-  end 
+    inherit drawable p w h
 
+    method draw =
+      set_color cyan ;
+      fill_rect p#x p#y w h
+  end
+
+class box (p : point)
+           (w : int)
+           (h : int) =
+  object
+    inherit drawable p w h
+
+    method draw =
+      set_color green ;
+      fill_rect p#x p#y w h
+  end
 (*.............................................................................
   Game Object Types 
 
@@ -31,5 +48,5 @@ class bomb (m : point) =
 .............................................................................*)
 type gameobject =
 | Empty
-| Wall
-| Box ;;
+| Wall of wall
+| Box of box;;

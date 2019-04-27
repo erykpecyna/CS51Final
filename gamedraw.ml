@@ -15,8 +15,8 @@ module G = Graphics ;;
 let window_initialize () =
   G.open_graph "";
   G.resize_window 800 600;
-  G.auto_synchronize false;
-  G.display_mode false;;
+  G.auto_synchronize true;
+  G.display_mode true;;
 
 let render_graphics =
     () ;;
