@@ -24,7 +24,7 @@ class bomb (m : point) =
     val linewidth : int = linewidth
                        
     method draw =
-      let (x, y) as p = anchor#round in
+      let (x, y) as p = pos#round in
       set_line_width linewidth;
       set_color background;
       fill_circle x y radius;
