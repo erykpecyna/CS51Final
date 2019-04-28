@@ -21,6 +21,4 @@ let window_initialize () =
   resize_window 800 600;
   auto_synchronize true;
   display_mode true;;
-
-let render_graphics =
     () ;;
