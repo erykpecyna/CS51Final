@@ -26,7 +26,7 @@ class wall (p : point)
     inherit drawable p w h
 
     method draw =
-      set_color cyan ;
+      set_color (rgb 128 128 128) ;
       fill_rect p#x p#y w h
   end
 
@@ -37,7 +37,7 @@ class box (p : point)
     inherit drawable p w h
 
     method draw =
-      set_color green ;
+      set_color (rgb 139 69 19) ;
       fill_rect p#x p#y w h
   end
 (*.............................................................................
