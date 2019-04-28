@@ -2,6 +2,12 @@ open Graphics
 open Gameobj
 open Gamedraw
 
+let rec delay (sec: float) : unit =
+  try ignore(Thread.delay sec)
+  with Unix.Unix_error _ -> delay sec
+
+let framedelay () = delay cFRAMEDELAY ;;
+
 let _ =
     open_graph "";
     resize_window 800 600;
