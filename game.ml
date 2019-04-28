@@ -18,5 +18,5 @@ let _ =
                                     | Wall w -> w#draw
                                     | Box b -> b#draw)
                         f in
-    Array.iter f test ;;
-    
+    Array.iter f test ;
+    delay 10. ;;
