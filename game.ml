@@ -15,4 +15,3 @@ let _ =
                                     | Box b -> b#draw)
                         f in
     Array.iter f test ;;
-    
