@@ -23,3 +23,5 @@ let render_graphics =
 
 let close_window =
     ignore (G.read_key ()) ;;
+
+let _ = window_initialize () ;;
