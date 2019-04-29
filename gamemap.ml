@@ -11,8 +11,8 @@ let generateMap (w : int)
   (* + 2 accounts for border around playable area *)
   let screenwidth = 800 in 
   let screenheight = 600 in
-  let xwidth = screenwidth / w in
-  let ywidth = screenheight / h in
+  let xwidth = screenwidth / (w + 2) in
+  let ywidth = screenheight / (h + 2) in
   let map = make_matrix (w + 2) (h + 2) Empty in
   for x = 0 to (w + 1) do
     for y = 0 to (h + 1) do
