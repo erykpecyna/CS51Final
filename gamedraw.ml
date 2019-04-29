@@ -19,8 +19,8 @@ let initialize_update ()  =
 let window_initialize () =
   open_graph "";
   resize_window 800 600;
-  auto_synchronize true;
-  display_mode true;;
+  auto_synchronize false;
+  display_mode false;;
 
 let render_graphics =
     () ;;

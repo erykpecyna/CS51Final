@@ -2,21 +2,29 @@ open Graphics
 open Gameobj
 open Gamedraw
 
+let gameArray = ref (Array.make_matrix 1 1 Empty)
+
 let rec delay (sec: float) : unit =
   try ignore(Thread.delay sec)
   with Unix.Unix_error _ -> delay sec
 
-let _ =
-    open_graph "";
-    resize_window 800 600;
-    auto_synchronize false;
-    display_mode false;
-    let test = Gamemap.generateMap 14 12 in
-    let f = fun f -> Array.iter
+let run () : unit = 
+  let drawArray = fun arr -> Array.iter
                         (fun obj -> match obj with
                                     | Empty -> ()
                                     | Wall w -> w#draw
                                     | Box b -> b#draw)
-                        f in
-    Array.iter f test ;
-    delay 10. ;;
+                        arr in
+  while true do
+    clear_graph ();
+    Array.iter drawArray !gameArray ;
+    delay 0.05 ;
+    synchronize ()
+    (* raise Exit *)
+  done
+
+
+let _ =
+    window_initialize() ;
+    gameArray := Gamemap.generateMap 13 11;
+    run ()
