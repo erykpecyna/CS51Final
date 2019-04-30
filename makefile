@@ -1,3 +1,8 @@
+RESULT     = testsdl_1
+SOURCES    = testsdl_1.ml
+LIBS       = bigarray sdl
+INCDIRS    = +sdl
+
 all: game gamedraw gamemap gameobj util
 
 game: game.ml

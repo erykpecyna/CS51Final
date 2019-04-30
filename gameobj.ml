@@ -1,6 +1,8 @@
 open Graphics ;;
 open Util ;;
 
+let screenWidth = 800
+let screenHeight = 600
 (*.............................................................................
   Graphical Objects 
 
@@ -34,15 +36,6 @@ class box (p : point) (w : int) (h : int) =
       fill_rect p#x p#y w h
   end
 
-class player (p : point) (rad : int) =
-  object
-    inherit drawable p
-
-    method draw =
-      set_color (rgb 255 0 0) ;
-      fill_circle p#x p#y rad
-  end
-
 class bomb (p : point) (rad : int) =
   object
     inherit drawable p
@@ -52,6 +45,36 @@ class bomb (p : point) (rad : int) =
       fill_circle p#x p#y rad
   end
 
+(* Character Types *)
+
+class moveable (p : point) (rad : int) =
+  object
+    inherit drawable p
+
+    method draw =
+      fill_circle p#x p#y rad
+  end
+
+class player (p : point) (rad : int) =
+  object
+    inherit moveable p rad as super
+
+    method move =
+      pos#move 1 0
+
+    method! draw =
+      set_color (rgb 0 255 0) ;
+      super#draw 
+  end
+
+class enemy (p : point) (rad : int) =
+  object
+    inherit moveable p rad as super
+
+    method! draw =
+      set_color (rgb 255 0 0) ;
+      super#draw 
+  end
 (*.............................................................................
   Game Object Types 
 
