@@ -5,8 +5,8 @@ open Util ;;
 module type GAMESTATE =
 sig
 	type state
-	val state
-end
+	val state: state
+end ;;
 
 let module BomberState : GAMESTATE =
 struct
@@ -73,6 +73,6 @@ struct
 
 			method drawMap = Array.iter drawArray gameArray
 			
-		end
+		end 
 
 end

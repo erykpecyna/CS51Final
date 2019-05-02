@@ -1,9 +1,4 @@
-RESULT     = testsdl_1
-SOURCES    = testsdl_1.ml
-LIBS       = bigarray sdl
-INCDIRS    = +sdl
-
-all: game gamedraw gamemap gameobj util
+all: game gamedraw gamemap gameobj util gameState
 
 game: game.ml
 	ocamlbuild game.byte
@@ -16,6 +11,9 @@ gamemap: gamemap.ml
 
 gameobj: gameobj.ml
 	ocamlbuild gameobj.byte
+
+gameState: gameState.ml
+	ocamlbuild gameState.byte
 
 util: util.ml
 	ocamlbuild util.byte
