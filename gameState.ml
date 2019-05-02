@@ -77,4 +77,20 @@ class state (mapW : int)
 			Array.iter drawArray gameArray ;
 			player#draw
 
-	end
+
+	class state (mapW : int) 
+							(mapH : int)
+							(screenW : int)
+							(screenH : int) =
+		object
+			val mutable mapWidth = 15
+			val mutable mapHeight = 13
+			val mutable objectWidth = screenWidth / mapWidth
+			val mutable objectHeight = screenHeight / mapHeight
+			val mutable gameArray = generateMap mapW mapH
+
+			method drawMap = Array.iter drawArray gameArray
+			
+		end 
+
+end
