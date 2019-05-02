@@ -60,7 +60,7 @@ class player (p : point) (rad : int) =
     inherit moveable p rad as super
 
     method move =
-      pos#move 1 0
+      pos#move (screenWidth/15) 0
 
     method! draw =
       set_color (rgb 0 255 0) ;
