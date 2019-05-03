@@ -19,4 +19,8 @@ object (this)
   method move (xdist : int) (ydist : int) : unit =
     x <- x + xdist;
     y <- y + ydist 
+
+  method moveTo (changeX: int) (changeY: int) : unit =
+    x <- changeX;
+    y <- changeY
 end
