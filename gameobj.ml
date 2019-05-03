@@ -91,5 +91,4 @@ type gameobject =
 | Empty
 | Wall of wall
 | Box of box
-| Player of player
 | Bomb of bomb

@@ -7,7 +7,7 @@ open Util ;;
 let generateMap (w : int)
 								(h : int)
 								(screenwidth : int)
-								(screenheight : int) =  =
+								(screenheight : int) =
 	(* + 2 accounts for border around playable area *)
 	let xwidth = screenWidth / (w + 2) in
 	let ywidth = screenHeight / (h + 2) in
@@ -46,7 +46,9 @@ let generateMap (w : int)
 let drawArray = 
 	fun arr -> Array.iter (fun obj -> match obj with
 																		| Empty -> ()
-																		| _ b -> b#draw )
+																		| Box b -> b#draw
+																		| Wall w -> w#draw
+																		| Bomb b -> b#draw)
 												arr ;;
 
 class state (mapW : int) 
@@ -58,16 +60,17 @@ class state (mapW : int)
 		val objectHeight = screenH / mapH
 		val gameArray = generateMap mapW mapH screenW screenH
 		val player = new player
-													(new point (objectWidth * 3 / 2)
-													(objectHeight * 3 / 2))
-													(objectHeight / 2)
+													(new point (screenW / mapW * 3 / 2)
+													(screenH / mapH * 3 / 2))
+													(screenH / mapH / 2)
 
 		method movePlayer (dir : char) =
 			let mov = match dir with
 			| 'w' -> (0, 1)
 			| 'a' -> (-1, 0)
 			| 's' -> (0, -1)
-			| 'd' -> (1, 0) in
+			| 'd' -> (1, 0) 
+			| _ -> (0, 0) in
 			let (oldx, oldy) = player#getArrCoords screenW screenH in
 			let (newx, newy) = oldx + fst mov, oldy + snd mov in 
 			if gameArray.(newx).(newy) = Empty then
@@ -76,21 +79,4 @@ class state (mapW : int)
 		method drawState =
 			Array.iter drawArray gameArray ;
 			player#draw
-
-
-	class state (mapW : int) 
-							(mapH : int)
-							(screenW : int)
-							(screenH : int) =
-		object
-			val mutable mapWidth = 15
-			val mutable mapHeight = 13
-			val mutable objectWidth = screenWidth / mapWidth
-			val mutable objectHeight = screenHeight / mapHeight
-			val mutable gameArray = generateMap mapW mapH
-
-			method drawMap = Array.iter drawArray gameArray
-			
-		end 
-
 end
