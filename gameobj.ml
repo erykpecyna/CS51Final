@@ -3,7 +3,7 @@ open Util ;;
 
 let screenWidth = 800
 let screenHeight = 600
-let TELEPORT = 
+let TELEPORT = 3
 (*.............................................................................
   Graphical Objects 
 
@@ -63,19 +63,30 @@ class moveable (p : point) (rad : int) =
   end
 
 class player (p : point) (rad : int) =
-  object
+  object (this)
     inherit moveable p rad as super
-    val mutable counter = 0 ;;
+    val mutable counter = 0 
+		val mutable moving = false 
+		val mutable finx = 0 
+		val mutable finy = 0 
 
+		method animate = 
+			if moving then
+				if counter = TELEPORT then
+					pos#move finx finy;
+					moving <- false;
+					counter <- 0
+				else if counter < TELEPORT then pos#move 10 0; counter <- succ counter
+				else () 
+			else ()
+			
     method move (x: int) (y: int) =
-			let rec move' (a: int) (b : int) = 
-      	pos#moveTo a b ;
-				if counter = 3 then counter <- 0;
-				else counter <- succ counter; move' (x / TELEPORT) (y / TELEPORT)
+			if moving then () else moving <- true; this#animate; finx <- x; finy <- y
 
     method! draw =
       set_color (rgb 0 255 0) ;
-      super#draw 
+			animate ();
+      super#draw
   end
 
 class enemy (p : point) (rad : int) =
