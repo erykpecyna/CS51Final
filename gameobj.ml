@@ -49,8 +49,14 @@ class bomb (p : point) (rad : int) =
 (* Character Types *)
 
 class moveable (p : point) (rad : int) =
-  object
+  object (this)
     inherit drawable p
+
+    method getSquareCoords = (p#x - rad, p#y - rad) 
+
+    method getArrCoords (screenW : int) (screenH : int) =
+      let (x, y) = this#getSquareCoords in
+      x / screenW, y / screenH
 
     method draw =
       fill_circle p#x p#y rad
@@ -92,5 +98,4 @@ type gameobject =
 | Empty
 | Wall of wall
 | Box of box
-| Player of player
 | Bomb of bomb
