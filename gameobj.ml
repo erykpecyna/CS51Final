@@ -3,7 +3,6 @@ open Util ;;
 
 let screenWidth = 800
 let screenHeight = 600
-let TELEPORT = 3
 (*.............................................................................
   Graphical Objects 
 
@@ -69,23 +68,24 @@ class player (p : point) (rad : int) =
 		val mutable moving = false 
 		val mutable finx = 0 
 		val mutable finy = 0 
+    val teleport = 3
 
 		method animate = 
-			if moving then
-				if counter = TELEPORT then
-					pos#move finx finy;
-					moving <- false;
-					counter <- 0
-				else if counter < TELEPORT then pos#move 10 0; counter <- succ counter
-				else () 
-			else ()
+      if (moving) then
+        if counter = teleport then
+          (pos#move finx finy;
+          moving <- true;
+          counter <- 0)
+        else if counter < teleport then
+          (pos#move 10 0;
+          counter <- succ counter)
 			
     method move (x: int) (y: int) =
 			if moving then () else moving <- true; this#animate; finx <- x; finy <- y
 
     method! draw =
       set_color (rgb 0 255 0) ;
-			animate ();
+			this#animate;
       super#draw
   end
 

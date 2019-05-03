@@ -8,8 +8,8 @@ let rec delay (sec: float) : unit =
   try ignore(Thread.delay sec)
   with Unix.Unix_error _ -> delay sec
 
-let movePlayer (k : char) =
-  if (k = 'd') then player#move
+(* let movePlayer (k : char) =
+  if (k = 'd') then player#move *)
 
 
 
@@ -32,10 +32,11 @@ let run state : unit =
     flush_kp () ;
     (* Clear old frame and draw new one *)
     clear_graph ();
+    state#drawState;
     delay 0.05 ;
     synchronize ()
   done
 
 let _ =
-  let newState = state 13 11 800 600 in
+  let newState = new state 15 13 800 600 in
   run newState
