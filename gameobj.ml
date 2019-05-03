@@ -53,39 +53,48 @@ class moveable (p : point) (rad : int) =
 
     method getSquareCoords = (p#x - rad, p#y - rad) 
 
-    method getArrCoords (screenW : int) (screenH : int) =
+    method getArrCoords (objW : int) (objW : int) =
       let (x, y) = this#getSquareCoords in
-      x / screenW, y / screenH
+      x / objW, y / objW
 
     method draw =
       fill_circle p#x p#y rad
   end
 
-class player (p : point) (rad : int) =
+class player (p : point) (rad : int) (w : int) (h : int) =
   object (this)
     inherit moveable p rad as super
     val mutable counter = 0 
-		val mutable moving = false 
-		val mutable finx = 0 
-		val mutable finy = 0 
+		val mutable moving = 0 
+		val mutable fin = 0 
+    val mutable animJump = 0
     val teleport = 3
-
-		method animate = 
-      if (moving) then
-        if counter = teleport then
-          (pos#move finx finy;
-          moving <- true;
-          counter <- 0)
-        else if counter < teleport then
-          (pos#move 10 0;
-          counter <- succ counter)
 			
+    method animate =
+      if counter = 2 then
+        ((if moving = 1 then pos#moveTo fin pos#y
+        else pos#moveTo pos#x fin);
+        moving <- 0)
+      else
+        (if moving = 1 then pos#move animJump 0
+        else pos#move 0 animJump;
+        counter <- counter + 1)
+
+    method moving = moving <> 0
+    
     method move (x: int) (y: int) =
-			if moving then () else moving <- true; this#animate; finx <- x; finy <- y
+			if moving = 0 then
+        (let xM = pos#y = y in
+        moving <- if xM then 1 else 2;
+        fin <- if xM then x else y;
+        animJump <- if xM then (fin - pos#x) / 3
+                    else (fin - pos#y) / 3 ;
+        counter <- 0;
+        this#animate)      
 
     method! draw =
       set_color (rgb 0 255 0) ;
-			this#animate;
+      if moving <> 0 then this#animate;
       super#draw
   end
 

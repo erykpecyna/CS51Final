@@ -31,15 +31,6 @@ let generateMap (w : int)
 	map.(1).(1) <- Empty ;
 	map.(2).(1) <- Empty ;
 	map.(1).(2) <- Empty ;
-	map.(1).(h-2) <- Empty ;
-	map.(1).(h-3) <- Empty ;
-	map.(2).(h-2) <- Empty ;
-	map.(w-2).(1) <- Empty ;
-	map.(w-2).(2) <- Empty ;
-	map.(w-3).(1) <- Empty ;
-	map.(w-3).(h-2) <- Empty ;
-	map.(w-2).(h-2) <- Empty ;
-	map.(w-2).(h-3) <- Empty ;
 	map ;;
 
 let drawArray = 
@@ -60,20 +51,24 @@ class state (mapW : int)
 		val gameArray = generateMap mapW mapH screenW screenH
 		val player = new player
 													(new point (screenW / mapW * 3 / 2)
-													(screenH / mapH * 3 / 2))
+																		 (screenH / mapH * 3 / 2))
 													(screenH / mapH / 2)
+													(screenW / mapW)
+													(screenH / mapH)
 
 		method movePlayer (dir : char) =
-			let mov = match dir with
-			| 'w' -> (0, 1)
-			| 'a' -> (-1, 0)
-			| 's' -> (0, -1)
-			| 'd' -> (1, 0) 
-			| _ -> (0, 0) in
-			let (oldx, oldy) = player#getArrCoords screenW screenH in
-			let (newx, newy) = oldx + fst mov, oldy + snd mov in 
-			if gameArray.(newx).(newy) = Empty then
-				player#move (newx * objectWidth) (newy * objectHeight)
+			if not player#moving then
+				(let mov = match dir with
+				| 'w' -> (0, 1)
+				| 'a' -> (-1, 0)
+				| 's' -> (0, -1)
+				| 'd' -> (1, 0) 
+				| _ -> (0, 0) in
+				let (oldx, oldy) = player#getArrCoords objectWidth objectHeight in
+				let (newx, newy) = oldx + fst mov, oldy + snd mov in 
+				if gameArray.(newx).(newy) = Empty then
+					player#move (newx * objectWidth + (objectWidth / 2))
+											(newy * objectHeight + (objectHeight / 2)))
 		
 		method drawState =
 			Array.iter drawArray gameArray ;
