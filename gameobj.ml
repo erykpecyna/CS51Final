@@ -3,7 +3,7 @@ open Util ;;
 
 let screenWidth = 800
 let screenHeight = 600
-let TELEPORT = 3
+let TELEPORT = 
 (*.............................................................................
   Graphical Objects 
 
@@ -67,13 +67,11 @@ class player (p : point) (rad : int) =
     inherit moveable p rad as super
     val mutable counter = 0 ;;
 
-    method move =
-			let counter = ref 0  in
-			let move' (x: int) (y: int)
-      	pos#moveTo (x / TELEPORT) (y / TELEPORT);
-				if !counter = 3 then counter := 0;
-				else 
-				counter := succ !counter 
+    method move (x: int) (y: int) =
+			let rec move' (a: int) (b : int) = 
+      	pos#moveTo a b ;
+				if counter = 3 then counter <- 0;
+				else counter <- succ counter; move' (x / TELEPORT) (y / TELEPORT)
 
     method! draw =
       set_color (rgb 0 255 0) ;
