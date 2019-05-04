@@ -34,9 +34,11 @@ let run state : unit =
         state#movePlayer inputstatus.key ;
     flush_kp () ;
 
+    (* Handle Game Object Movement/action *)
+    state#tickBombs;
+
     (* Clear old frame and draw new one *)
     clear_graph ();
-    state#tickBombs;
     state#drawState;
     delay 0.05 ;
     synchronize ()
