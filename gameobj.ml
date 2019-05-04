@@ -119,6 +119,11 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
       fill_circle p#x p#y rad
   end
 
+class player (p : point) (rad : int) (w : int) (h : int) =
+  object (this)
+    inherit moveable p rad w h
+  end
+
 (*.............................................................................
   Game Object Types 
 
