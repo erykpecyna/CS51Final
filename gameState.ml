@@ -92,7 +92,7 @@ class state (mapW : int)
 				if gameArray.(newx).(newy) = Empty then
 					player#move (newx * objectWidth + (objectWidth / 2))
 											(newy * objectHeight + (objectHeight / 2))))
-
+					
 		method moveEnemies = ()
 
 		method drawState =

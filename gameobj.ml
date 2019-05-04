@@ -121,7 +121,7 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
         
     method getSquareCoords = (p#x - rad, p#y - rad) 
 
-    method getArrCoords (objW : int) (objW : int) =
+    method getArrCoords (objW : int) (objH : int) =
       let (x, y) = this#getSquareCoords in
       x / objW, y / objW
 
@@ -155,3 +155,5 @@ type gameobject =
 | Wall of wall
 | Box of box
 | Bomb of bomb
+| Extrabomb of extrabomb
+| Firepower of firepower
