@@ -1,8 +1,6 @@
 open Graphics ;;
 open Util ;;
 
-let screenWidth = 800
-let screenHeight = 600
 (*.............................................................................
   Graphical Objects 
 
