@@ -42,18 +42,20 @@ let drawArray =
 						   | Empty -> ()
 						   | Box b -> b#draw
 						   | Wall w -> w#draw
-						   | Bomb b -> b#draw)
+						   | Bomb b -> b#draw
+							 | Exploding e -> e#draw)
 						   arr ;;
 
 class state (mapW : int) 
 						(mapH : int)
 						(screenW : int)
 						(screenH : int) =
-	object
+	object (this)
 		val objectWidth = screenW / mapW
 		val objectHeight = screenH / mapH
 		val gameArray = generateMap mapW mapH screenW screenH
 		val mutable bomblist = ObjSet.empty
+		val mutable explodinglist = ObjSet.empty
 		val player = new player
 													(new point (screenW / mapW * 3 / 2)
 													(screenH / mapH * 3 / 2))
@@ -62,13 +64,60 @@ class state (mapW : int)
 													(screenH / mapH)
 
 		method tickBombs =
+			let run = ref true in
 			ObjSet.iter (fun (x, y) ->
-									let Bomb b = gameArray.(x).(y) in
-									if b#tick then
-										(gameArray.(x).(y) <- Empty;
-										player#addbomb;
-										bomblist <- ObjSet.remove (x,y) bomblist))
+										match gameArray.(x).(y) with
+										| Bomb b ->
+											let Bomb b = gameArray.(x).(y) in
+											if b#tick then
+												(this#explode x y b)
+										| _ -> ())
 								bomblist
+
+    method tickExploding =
+      ObjSet.iter (fun (x, y) ->
+									let Exploding e = gameArray.(x).(y) in
+									if e#tick then
+										(gameArray.(x).(y) <- Empty;
+										explodinglist <- ObjSet.remove (x,y) explodinglist))
+								explodinglist
+
+		method explode (xPos : int) (yPos : int) (b : bomb) =
+			let explode' x y =
+			gameArray.(x).(y) <- Exploding (new exploding
+																				(new point (x*objectWidth) (y*objectHeight))
+																				objectWidth
+																				objectHeight);
+			explodinglist <- ObjSet.add (x, y) explodinglist in
+			let directionalExplosion x y check =
+				match check with
+				| Empty -> explode' x y; true
+				| Wall _ -> false
+				| Box _ -> explode' x y; false
+				| Bomb b -> this#explode x y b; false
+				| Exploding e -> true
+			in
+			player#addbomb;
+			bomblist <- ObjSet.remove (xPos, yPos) bomblist;
+			explode' xPos yPos ;
+			let down = ref true in
+			let up = ref true in
+			let left = ref true in
+			let right = ref true in
+			for i = 1 to b#blastradius do
+				if !down then
+					(let check = gameArray.(xPos).(yPos - i) in
+					down := directionalExplosion xPos (yPos - i) check) ;
+				if !up then
+					(let check = gameArray.(xPos).(yPos + i) in
+					up := directionalExplosion xPos (yPos + i) check) ;
+				if !left then
+					(let check = gameArray.(xPos - i).(yPos) in
+					left := directionalExplosion (xPos - i) yPos check);
+				if !right then
+					(let check = gameArray.(xPos + i).(yPos) in
+					right := directionalExplosion (xPos + i) yPos check)
+			done
 
 		method movePlayer (dir : char) =
 			if not player#moving then
@@ -76,10 +125,11 @@ class state (mapW : int)
 					(if player#bombcount > 0 then
 						(player#dropbomb;
 						let (x, y) = player#getArrCoords objectWidth objectHeight in
-						gameArray.(x).(y) <- Bomb (new bomb 
-																						(new point player#xPos player#yPos)
-																						(objectHeight/2));
-						bomblist <- ObjSet.add (x,y) bomblist))
+						if gameArray.(x).(y) = Empty then
+							(gameArray.(x).(y) <- Bomb (new bomb 
+																							(new point player#xPos player#yPos)
+																							(objectHeight/2));
+							bomblist <- ObjSet.add (x,y) bomblist)))
 				else 
 				(let mov = match dir with
 				| 'w' -> (0, 1)
@@ -89,9 +139,12 @@ class state (mapW : int)
 				| _ -> (0, 0) in
 				let (oldx, oldy) = player#getArrCoords objectWidth objectHeight in
 				let (newx, newy) = oldx + fst mov, oldy + snd mov in 
-				if gameArray.(newx).(newy) = Empty then
-					player#move (newx * objectWidth + (objectWidth / 2))
-											(newy * objectHeight + (objectHeight / 2))))
+				match gameArray.(newx).(newy) with
+				| Empty
+				| Exploding _ -> 
+						player#move (newx * objectWidth)
+												(newy * objectHeight)
+				| _ -> ()))
 
 		method moveEnemies = ()
 

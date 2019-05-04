@@ -35,6 +35,7 @@ let run state : unit =
     flush_kp () ;
 
     (* Handle Game Object Movement/action *)
+    state#tickExploding;
     state#tickBombs;
 
     (* Clear old frame and draw new one *)
@@ -45,5 +46,5 @@ let run state : unit =
   done
 
 let _ =
-  let newState = new state 15 13 1200 900 in
+  let newState = new state 15 13 1200 897 in
   run newState

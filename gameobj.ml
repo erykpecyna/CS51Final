@@ -38,6 +38,11 @@ class bomb (p : point) (rad : int) =
     inherit drawable p
 
     val mutable timer = 30
+    val mutable blastradius = 3
+
+    method blastradius = blastradius
+
+    method add_blastradius = blastradius <- blastradius + 1
 
     method tick = timer <- timer - 1; timer <= 0
 
@@ -50,6 +55,9 @@ class exploding (p : point) (w : int) (h : int) =
   object
     inherit drawable p
 
+    val mutable timer = 10
+
+    method tick = timer <- timer - 1; timer <= 0
     method draw =
       set_color (rgb 255 247 0) ;
       fill_rect p#x p#y w h
@@ -106,7 +114,7 @@ class player (p : point) (rad : int) (w : int) (h : int) =
   object (this)
     inherit moveable p rad w h
 
-    val mutable bombcount = 1
+    val mutable bombcount = 3
 
     method bombcount = bombcount
     method dropbomb = bombcount <- bombcount - 1
@@ -123,3 +131,4 @@ type gameobject =
 | Wall of wall
 | Box of box
 | Bomb of bomb
+| Exploding of exploding
