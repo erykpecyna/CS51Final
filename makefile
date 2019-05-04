@@ -1,13 +1,7 @@
-all: game gamedraw gamemap gameobj util gameState
+all: game gameobj util gameState
 
 game: game.ml
 	ocamlbuild game.byte
-
-gamedraw: gamedraw.ml
-	ocamlbuild gamedraw.byte
-
-gamemap: gamemap.ml
-	ocamlbuild gamemap.byte
 
 gameobj: gameobj.ml
 	ocamlbuild gameobj.byte

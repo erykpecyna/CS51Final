@@ -9,6 +9,7 @@ let generateMap (w : int)
 								(screenwidth : int)
 								(screenheight : int) =
 	let xwidth = screenWidth / w in
+	Printf.printf "width: %d \n" xwidth;
 	let ywidth = screenHeight / h in
 	let map = make_matrix w h Empty in
 	for x = 0 to (w - 1) do
@@ -21,7 +22,7 @@ let generateMap (w : int)
 																ywidth)
 		else
 		let rand = Random.int 2 in
-		if (rand = 1) then map.(x).(y) <- Box (new box 
+		if rand = 1 then map.(x).(y) <- Box (new box 
 																						(new point (x*xwidth) (y*ywidth))
 																						xwidth
 																						ywidth)
