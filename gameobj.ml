@@ -47,6 +47,14 @@ class bomb (p : point) (rad : int) =
       fill_circle p#x p#y rad
   end
 
+class exploding (p : point) (w : int) (h : int) =
+  object
+    inherit drawable p
+
+    method draw =
+      set_color (rgb 255 247 0) ;
+      fill_rect p#x p#y w h
+  end
 (* Character Types *)
 
 class moveable (p : point) (rad : int) (w : int) (h : int) =
@@ -99,7 +107,7 @@ class player (p : point) (rad : int) (w : int) (h : int) =
   object (this)
     inherit moveable p rad w h
 
-    val mutable bombcount = 2
+    val mutable bombcount = 1
 
     method bombcount = bombcount
     method dropbomb = bombcount <- bombcount - 1
