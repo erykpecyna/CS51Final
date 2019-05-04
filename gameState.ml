@@ -49,6 +49,10 @@ class state (mapW : int)
 		val objectWidth = screenW / mapW
 		val objectHeight = screenH / mapH
 		val gameArray = generateMap mapW mapH screenW screenH
+<<<<<<< HEAD
+		val mutable bomblist = []
+=======
+>>>>>>> parent of 4317292... shieber no good
 		val player = new player
 													(new point (screenW / mapW * 3 / 2)
 													(screenH / mapH * 3 / 2))
@@ -57,8 +61,27 @@ class state (mapW : int)
 													(screenH / mapH)
 		val powerbomb = new extrabomb (new point 200 200) (screenW / mapW) (screenH / mapH) (screenH / mapH / 2)
 
+		method tickBombs =
+			List.iter (fun (x, y) ->
+									let Bomb b = gameArray.(x).(y) in
+									if b#tick then
+										(gameArray.(x).(y) <- Empty;
+										player#addbomb;
+										bomblist <- List.filter (fun ele -> ele <> (x, y))
+																						bomblist))
+								bomblist
+
 		method movePlayer (dir : char) =
 			if not player#moving then
+				(if dir = ' ' then
+					(if player#bombcount > 0 then
+						(player#dropbomb;
+						let (x, y) = player#getArrCoords objectWidth objectHeight in
+						gameArray.(x).(y) <- Bomb (new bomb 
+																						(new point player#xPos player#yPos)
+																						(objectHeight/2));
+						bomblist <- (x, y) :: bomblist))
+				else 
 				(let mov = match dir with
 				| 'w' -> (0, 1)
 				| 'a' -> (-1, 0)
@@ -69,8 +92,10 @@ class state (mapW : int)
 				let (newx, newy) = oldx + fst mov, oldy + snd mov in 
 				if gameArray.(newx).(newy) = Empty then
 					player#move (newx * objectWidth + (objectWidth / 2))
-											(newy * objectHeight + (objectHeight / 2)))
-		
+											(newy * objectHeight + (objectHeight / 2))))
+
+		method moveEnemies = ()
+
 		method drawState =
 			Array.iter drawArray gameArray ;
 			player#draw;
