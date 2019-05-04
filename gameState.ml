@@ -51,7 +51,7 @@ class state (mapW : int)
 		val gameArray = generateMap mapW mapH screenW screenH
 		val player = new moveable
 													(new point (screenW / mapW * 3 / 2)
-																		 (screenH / mapH * 3 / 2))
+													(screenH / mapH * 3 / 2))
 													(screenH / mapH / 2)
 													(screenW / mapW)
 													(screenH / mapH)
