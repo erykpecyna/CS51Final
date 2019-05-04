@@ -9,7 +9,7 @@ let rec delay (sec: float) : unit =
 
 let window_initialize () =
   open_graph "";
-  resize_window 1920 1080;
+  resize_window 1200 900;
   auto_synchronize false;
   display_mode false;;
 
@@ -18,7 +18,7 @@ let run state : unit =
      at https://stackoverflow.com/questions/6390631/ocaml-module-graphics-queuing-keypresses
      from user Benoit Fraikin *)
   let flush_kp () = while key_pressed () do
-                      let c = read_key ()
+                      let _ = read_key ()
                       in ()
                   done in
   
@@ -41,5 +41,5 @@ let run state : unit =
   done
 
 let _ =
-  let newState = new state 15 13 1920 1080 in
+  let newState = new state 15 13 1200 900 in
   run newState

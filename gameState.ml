@@ -8,9 +8,8 @@ let generateMap (w : int)
 								(h : int)
 								(screenwidth : int)
 								(screenheight : int) =
-	let xwidth = screenWidth / w in
-	Printf.printf "width: %d \n" xwidth;
-	let ywidth = screenHeight / h in
+	let xwidth = screenwidth / w in
+	let ywidth = screenheight / h in
 	let map = make_matrix w h Empty in
 	for x = 0 to (w - 1) do
 		for y = 0 to (h - 1) do
