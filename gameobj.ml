@@ -47,6 +47,38 @@ class bomb (p : point) (rad : int) =
       fill_circle p#x p#y rad
   end
 
+class powerup (p : point) (w : int) (h: int) =
+  object
+    inherit drawable p
+
+    method draw =
+      set_color (rgb 0 0 0) ;
+      fill_rect p#x p#y w h
+  end 
+
+class extrabomb (p: point) (w: int) (h: int) (rad: int) =
+	object 
+		inherit powerup p w h as super
+
+		method! draw =
+			set_color (rgb 255 255 0) ;
+			fill_rect (p#x - w/2) (p#y - h/2) w h ;
+			set_color (rgb 0 0 0) ;
+			fill_circle p#x p#y rad 
+	end
+
+class firepower (p: point) (w: int) (h: int) (rad: int) =
+	object 
+		inherit powerup p w h as super
+
+		method! draw =
+			set_color (rgb 255 255 0) ;
+			fill_rect (p#x - w/2) (p#y - h/2) w h ;
+			set_color (rgb 255 0 0) ;
+			fill_circle p#x p#y rad 
+	end
+			
+
 (* Character Types *)
 
 class moveable (p : point) (rad : int) (w : int) (h : int) =
@@ -125,3 +157,4 @@ type gameobject =
 | Wall of wall
 | Box of box
 | Bomb of bomb
+| Powerup of powerup
