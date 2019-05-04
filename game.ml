@@ -1,6 +1,5 @@
 open Graphics
 open Gameobj
-open Gamedraw
 open Util
 open GameState
 
@@ -8,19 +7,22 @@ let rec delay (sec: float) : unit =
   try ignore(Thread.delay sec)
   with Unix.Unix_error _ -> delay sec
 
-(* let movePlayer (k : char) =
-  if (k = 'd') then player#move *)
-
-
+let window_initialize () =
+  open_graph "";
+  resize_window 1920 1080;
+  auto_synchronize false;
+  display_mode false;;
 
 let run state : unit = 
-  (* flush_kp was found as a bandaid patch to Ocaml's crappy event handling
+  (* flush_kp was found as a bandaid patch to Ocaml's spotty event handling
      at https://stackoverflow.com/questions/6390631/ocaml-module-graphics-queuing-keypresses
      from user Benoit Fraikin *)
   let flush_kp () = while key_pressed () do
                       let c = read_key ()
                       in ()
                   done in
+  
+  (* Open a graphics window and start the game loop *)
   window_initialize() ;
   while true do
     (* Handle Keyboard input *)
@@ -30,6 +32,7 @@ let run state : unit =
           || inputstatus.key = 's' || inputstatus.key = 'd') then
         state#movePlayer inputstatus.key ;
     flush_kp () ;
+
     (* Clear old frame and draw new one *)
     clear_graph ();
     state#drawState;
@@ -38,5 +41,5 @@ let run state : unit =
   done
 
 let _ =
-  let newState = new state 15 13 800 600 in
+  let newState = new state 15 13 1920 1080 in
   run newState
