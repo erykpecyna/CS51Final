@@ -57,8 +57,8 @@ class state (mapW : int)
 		val mutable bomblist = ObjSet.empty
 		val mutable explodinglist = ObjSet.empty
 		val player = new player
-													(new point (screenW / mapW * 3 / 2)
-													(screenH / mapH * 3 / 2))
+													(new point (screenW / mapW)
+																		 (screenH / mapH))
 													(screenH / mapH / 2)
 													(screenW / mapW)
 													(screenH / mapH)

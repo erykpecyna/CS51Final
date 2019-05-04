@@ -48,7 +48,7 @@ class bomb (p : point) (rad : int) =
 
     method draw =
       set_color (rgb 0 0 0) ;
-      fill_circle p#x p#y rad
+      fill_circle (p#x + rad) (p#y + rad) rad
   end
 
 class exploding (p : point) (w : int) (h : int) =
@@ -94,12 +94,9 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
                     else (fin - pos#y) / 3 ;
         counter <- 0;
         this#animate)     
-        
-    method getSquareCoords = (p#x - rad, p#y - rad) 
 
     method getArrCoords (objW : int) (objW : int) =
-      let (x, y) = this#getSquareCoords in
-      x / objW, y / objW
+      p#x / objW, p#y / objW
 
     method xPos = pos#x
     method yPos = pos#y
@@ -107,7 +104,7 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
     method draw =
       set_color (rgb 0 255 0) ;
       if moving <> 0 then this#animate ;
-      fill_circle p#x p#y rad
+      fill_circle (p#x + rad) (p#y + rad) rad
   end
 
 class player (p : point) (rad : int) (w : int) (h : int) =
