@@ -38,11 +38,6 @@ class bomb (p : point) (rad : int) =
     inherit drawable p
 
     val mutable timer = 30
-    val mutable blastradius = 1
-
-    method blastradius = blastradius
-
-    method add_blastradius = blastradius <- blastradius + 1
 
     method tick = timer <- timer - 1; timer <= 0
 
@@ -66,32 +61,39 @@ class exploding (p : point) (w : int) (h : int) =
 class powerup (p : point) (w : int) (h: int) =
   object
     inherit drawable p
+    val id = 0
+
+    method id = id
 
     method draw =
       set_color (rgb 0 0 0) ;
       fill_rect p#x p#y w h
   end 
 
-class extrabomb (p: point) (w: int) (h: int) (rad: int) =
+class extrabomb (p: point) (w: int) (h: int) =
 	object 
 		inherit powerup p w h as super
+    val id = 1
 
 		method! draw =
 			set_color (rgb 255 255 0) ;
-			fill_rect (p#x - w/2) (p#y - h/2) w h ;
+			fill_rect p#x p#y w h ;
 			set_color (rgb 0 0 0) ;
-			fill_circle p#x p#y rad 
+			let rad = h/2 in 
+			fill_circle (p#x + rad) (p#y + rad) rad 
 	end
 
-class firepower (p: point) (w: int) (h: int) (rad: int) =
+class firepower (p: point) (w: int) (h: int) =
 	object 
 		inherit powerup p w h as super
+    val id = 2
 
 		method! draw =
 			set_color (rgb 255 255 0) ;
-			fill_rect (p#x - w/2) (p#y - h/2) w h ;
+			fill_rect p#x p#y w h ;
 			set_color (rgb 255 0 0) ;
-			fill_circle p#x p#y rad 
+      let rad = h/2 in 
+			fill_circle (p#x + rad) (p#y + rad) rad 
 	end
 
 (* Character Types *)
@@ -144,7 +146,10 @@ class player (p : point) (rad : int) (w : int) (h : int) =
     inherit moveable p rad w h
 
     val mutable bombcount = 1
+    val mutable blastradius = 1
 
+    method blastradius = blastradius
+    method addblastradius = blastradius <- blastradius + 1
     method bombcount = bombcount
     method dropbomb = bombcount <- bombcount - 1
     method addbomb = bombcount <- bombcount + 1
@@ -161,3 +166,4 @@ type gameobject =
 | Box of box
 | Bomb of bomb
 | Exploding of exploding
+| Powerup of powerup

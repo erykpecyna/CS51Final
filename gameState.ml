@@ -43,7 +43,8 @@ let drawArray =
 						   | Box b -> b#draw
 						   | Wall w -> w#draw
 						   | Bomb b -> b#draw
-							 | Exploding e -> e#draw)
+							 | Exploding e -> e#draw
+							 | Powerup p -> p#draw)
 						   arr ;;
 
 class state (mapW : int) 
@@ -93,9 +94,23 @@ class state (mapW : int)
 				match check with
 				| Empty -> explode' x y; true
 				| Wall _ -> false
-				| Box _ -> explode' x y; false
+				| Box _ -> 
+          let rand = Random.int 25 in
+          if rand = 1 then 
+            gameArray.(x).(y) <- Powerup (new extrabomb
+																				    (new point (x*objectWidth) (y*objectHeight))
+																				    objectWidth
+																				    objectHeight :> powerup)
+          else if rand = 2 then
+            gameArray.(x).(y) <- Powerup (new firepower
+																				    (new point (x*objectWidth) (y*objectHeight))
+																				    objectWidth
+																				    objectHeight :> powerup)
+					else explode' x y;
+          false
 				| Bomb b -> this#explode x y b; false
 				| Exploding e -> true
+				| _ -> true
 			in
 			player#addbomb;
 			bomblist <- ObjSet.remove (xPos, yPos) bomblist;
@@ -104,7 +119,7 @@ class state (mapW : int)
 			let up = ref true in
 			let left = ref true in
 			let right = ref true in
-			for i = 1 to b#blastradius do
+			for i = 1 to player#blastradius do
 				if !down then
 					(let check = gameArray.(xPos).(yPos - i) in
 					down := directionalExplosion xPos (yPos - i) check) ;
@@ -142,8 +157,14 @@ class state (mapW : int)
 				match gameArray.(newx).(newy) with
 				| Empty
 				| Exploding _ -> 
-						player#move (newx * objectWidth)
-												(newy * objectHeight)
+					player#move (newx * objectWidth)
+											(newy * objectHeight)
+				| Powerup p ->
+					(if p#id = 1 then player#addbomb
+					else player#addblastradius);
+					gameArray.(newx).(newy) <- Empty;
+					player#move (newx * objectWidth)
+											(newy * objectHeight)
 				| _ -> ()))
 
 		method moveEnemies = ()
