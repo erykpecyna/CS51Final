@@ -70,6 +70,8 @@ class state (mapW : int)
 					player#move (newx * objectWidth + (objectWidth / 2))
 											(newy * objectHeight + (objectHeight / 2)))
 		
+		method moveEnemies = ()
+
 		method drawState =
 			Array.iter drawArray gameArray ;
 			player#draw
