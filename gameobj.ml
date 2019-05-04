@@ -52,6 +52,7 @@ class bomb (p : point) (rad : int) =
 class moveable (p : point) (rad : int) (w : int) (h : int) =
   object (this)
     inherit drawable p
+    
     val mutable counter = 0 
 		val mutable moving = 0 
 		val mutable fin = 0 
@@ -90,13 +91,12 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
     method yPos = pos#y
 
     method draw =
-      set_color (rgb 0 255 0) ;
-      if moving <> 0 then this#animate ;
       fill_circle p#x p#y rad
   end
 
 class player (p : point) (rad : int) (w : int) (h : int) =
   object (this)
+<<<<<<< HEAD
     inherit moveable p rad w h
 
     val mutable bombcount = 2
@@ -104,6 +104,14 @@ class player (p : point) (rad : int) (w : int) (h : int) =
     method bombcount = bombcount
     method dropbomb = bombcount <- bombcount - 1
     method addbomb = bombcount <- bombcount + 1
+=======
+    inherit moveable p rad w h as super 
+
+    method! draw =
+      set_color (rgb 255 255 255) ;
+      if moving <> 0 then this#animate;
+      super#draw
+>>>>>>> parent of 4317292... shieber no good
   end
 
 (*.............................................................................

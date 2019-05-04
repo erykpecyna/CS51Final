@@ -49,7 +49,10 @@ class state (mapW : int)
 		val objectWidth = screenW / mapW
 		val objectHeight = screenH / mapH
 		val gameArray = generateMap mapW mapH screenW screenH
+<<<<<<< HEAD
 		val mutable bomblist = []
+=======
+>>>>>>> parent of 4317292... shieber no good
 		val player = new player
 													(new point (screenW / mapW * 3 / 2)
 													(screenH / mapH * 3 / 2))
