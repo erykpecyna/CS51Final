@@ -49,7 +49,7 @@ class state (mapW : int)
 		val objectWidth = screenW / mapW
 		val objectHeight = screenH / mapH
 		val gameArray = generateMap mapW mapH screenW screenH
-		val player = new moveable
+		val player = new player
 													(new point (screenW / mapW * 3 / 2)
 													(screenH / mapH * 3 / 2))
 													(screenH / mapH / 2)
