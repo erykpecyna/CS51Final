@@ -29,12 +29,14 @@ let run state : unit =
     let inputstatus = wait_next_event [Poll] in
     if (key_pressed ()) then
       if (inputstatus.key = 'w' || inputstatus.key = 'a'
-          || inputstatus.key = 's' || inputstatus.key = 'd') then
+          || inputstatus.key = 's' || inputstatus.key = 'd'
+          || inputstatus.key = ' ') then
         state#movePlayer inputstatus.key ;
     flush_kp () ;
 
     (* Clear old frame and draw new one *)
     clear_graph ();
+    state#tickBombs;
     state#drawState;
     delay 0.05 ;
     synchronize ()

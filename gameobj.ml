@@ -38,6 +38,10 @@ class bomb (p : point) (rad : int) =
   object
     inherit drawable p
 
+    val mutable timer = 30
+
+    method tick = timer <- timer - 1; timer <= 0
+
     method draw =
       set_color (rgb 0 0 0) ;
       fill_circle p#x p#y rad
@@ -75,11 +79,15 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
                     else (fin - pos#y) / 3 ;
         counter <- 0;
         this#animate)     
+        
     method getSquareCoords = (p#x - rad, p#y - rad) 
 
     method getArrCoords (objW : int) (objW : int) =
       let (x, y) = this#getSquareCoords in
       x / objW, y / objW
+
+    method xPos = pos#x
+    method yPos = pos#y
 
     method draw =
       set_color (rgb 0 255 0) ;
@@ -90,6 +98,12 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
 class player (p : point) (rad : int) (w : int) (h : int) =
   object (this)
     inherit moveable p rad w h
+
+    val mutable bombcount = 2
+
+    method bombcount = bombcount
+    method dropbomb = bombcount <- bombcount - 1
+    method addbomb = bombcount <- bombcount + 1
   end
 
 (*.............................................................................
