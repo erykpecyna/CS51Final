@@ -37,10 +37,17 @@ class box (p : point) (w : int) (h : int) =
 class bomb (p : point) (rad : int) =
   object
     inherit drawable p
-
     method draw =
       set_color (rgb 0 0 0) ;
       fill_circle p#x p#y rad
+  end
+
+class explosion (p : point) (w : int) (h: int) =
+  object
+    inherit drawable p
+    method draw =
+      set_color (rgb 255 165 0) ;
+      fill_rect p#x p#y w h
   end
 
 (* Character Types *)
