@@ -1,6 +1,10 @@
 open Array ;;
 open Gameobj ;;
 open Util ;;
+module ObjSet = Set.Make (struct
+												type t = (int * int)
+												let compare = compare
+											end) ;;
 
 (* Generates a new map with boxes placed to allow for a proper start for all
 	players. Takes arguments for the size of the map. *)
@@ -49,7 +53,7 @@ class state (mapW : int)
 		val objectWidth = screenW / mapW
 		val objectHeight = screenH / mapH
 		val gameArray = generateMap mapW mapH screenW screenH
-		val mutable bomblist = []
+		val mutable bomblist = ObjSet.empty
 		val player = new player
 													(new point (screenW / mapW * 3 / 2)
 													(screenH / mapH * 3 / 2))
@@ -58,13 +62,12 @@ class state (mapW : int)
 													(screenH / mapH)
 
 		method tickBombs =
-			List.iter (fun (x, y) ->
+			ObjSet.iter (fun (x, y) ->
 									let Bomb b = gameArray.(x).(y) in
 									if b#tick then
 										(gameArray.(x).(y) <- Empty;
 										player#addbomb;
-										bomblist <- List.filter (fun ele -> ele <> (x, y))
-																						bomblist))
+										bomblist <- ObjSet.remove (x,y) bomblist))
 								bomblist
 
 		method movePlayer (dir : char) =
@@ -76,7 +79,7 @@ class state (mapW : int)
 						gameArray.(x).(y) <- Bomb (new bomb 
 																						(new point player#xPos player#yPos)
 																						(objectHeight/2));
-						bomblist <- (x, y) :: bomblist))
+						bomblist <- ObjSet.add (x,y) bomblist))
 				else 
 				(let mov = match dir with
 				| 'w' -> (0, 1)

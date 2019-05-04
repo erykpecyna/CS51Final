@@ -3,7 +3,6 @@ open Util ;;
 
 (*.............................................................................
   Graphical Objects 
-
   This class provides a basis for every object in the game. The game objects
   will necessarily have more functionality, but the drawable object will
   necessitate their ability to be drawn on the screen
@@ -47,6 +46,14 @@ class bomb (p : point) (rad : int) =
       fill_circle p#x p#y rad
   end
 
+class exploding (p : point) (w : int) (h : int) =
+  object
+    inherit drawable p
+
+    method draw =
+      set_color (rgb 255 247 0) ;
+      fill_rect p#x p#y w h
+  end
 (* Character Types *)
 
 class moveable (p : point) (rad : int) (w : int) (h : int) =
@@ -99,7 +106,7 @@ class player (p : point) (rad : int) (w : int) (h : int) =
   object (this)
     inherit moveable p rad w h
 
-    val mutable bombcount = 2
+    val mutable bombcount = 1
 
     method bombcount = bombcount
     method dropbomb = bombcount <- bombcount - 1
@@ -108,7 +115,6 @@ class player (p : point) (rad : int) (w : int) (h : int) =
 
 (*.............................................................................
   Game Object Types 
-
   These types differentiate between the types objects that may need to be
   created
 .............................................................................*)
