@@ -38,7 +38,7 @@ class bomb (p : point) (rad : int) =
     inherit drawable p
 
     val mutable timer = 30
-    val mutable blastradius = 3
+    val mutable blastradius = 1
 
     method blastradius = blastradius
 
@@ -127,8 +127,8 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
         counter <- 0;
         this#animate)     
 
-    method getArrCoords (objW : int) (objW : int) =
-      p#x / objW, p#y / objW
+    method getArrCoords (objW : int) (objH : int) =
+      p#x / objW, p#y / objH
 
     method xPos = pos#x
     method yPos = pos#y
@@ -143,7 +143,7 @@ class player (p : point) (rad : int) (w : int) (h : int) =
   object (this)
     inherit moveable p rad w h
 
-    val mutable bombcount = 3
+    val mutable bombcount = 1
 
     method bombcount = bombcount
     method dropbomb = bombcount <- bombcount - 1

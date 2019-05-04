@@ -9,7 +9,7 @@ let rec delay (sec: float) : unit =
 
 let window_initialize () =
   open_graph "";
-  resize_window 1200 900;
+  resize_window 1200 897;
   auto_synchronize false;
   display_mode false;;
 
