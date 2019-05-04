@@ -37,38 +37,18 @@ class box (p : point) (w : int) (h : int) =
 class bomb (p : point) (rad : int) =
   object
     inherit drawable p
+
     method draw =
       set_color (rgb 0 0 0) ;
       fill_circle p#x p#y rad
   end
 
-class explosion (p : point) (w : int) (h: int) =
-  object
-    inherit drawable p
-    method draw =
-      set_color (rgb 255 165 0) ;
-      fill_rect p#x p#y w h
-  end
-
 (* Character Types *)
 
-class moveable (p : point) (rad : int) =
+class moveable (p : point) (rad : int) (w : int) (h : int) =
   object (this)
     inherit drawable p
-
-    method getSquareCoords = (p#x - rad, p#y - rad) 
-
-    method getArrCoords (objW : int) (objW : int) =
-      let (x, y) = this#getSquareCoords in
-      x / objW, y / objW
-
-    method draw =
-      fill_circle p#x p#y rad
-  end
-
-class player (p : point) (rad : int) (w : int) (h : int) =
-  object (this)
-    inherit moveable p rad as super
+    
     val mutable counter = 0 
 		val mutable moving = 0 
 		val mutable fin = 0 
@@ -95,22 +75,27 @@ class player (p : point) (rad : int) (w : int) (h : int) =
         animJump <- if xM then (fin - pos#x) / 3
                     else (fin - pos#y) / 3 ;
         counter <- 0;
-        this#animate)      
+        this#animate)     
+    method getSquareCoords = (p#x - rad, p#y - rad) 
+
+    method getArrCoords (objW : int) (objW : int) =
+      let (x, y) = this#getSquareCoords in
+      x / objW, y / objW
+
+    method draw =
+      fill_circle p#x p#y rad
+  end
+
+class player (p : point) (rad : int) (w : int) (h : int) =
+  object (this)
+    inherit moveable p rad w h as super 
 
     method! draw =
-      set_color (rgb 0 255 0) ;
+      set_color (rgb 255 255 255) ;
       if moving <> 0 then this#animate;
       super#draw
   end
 
-class enemy (p : point) (rad : int) =
-  object
-    inherit moveable p rad as super
-
-    method! draw =
-      set_color (rgb 255 0 0) ;
-      super#draw 
-  end
 (*.............................................................................
   Game Object Types 
 
