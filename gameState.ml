@@ -55,6 +55,7 @@ class state (mapW : int)
 													(screenH / mapH / 2)
 													(screenW / mapW)
 													(screenH / mapH)
+		val powerbomb = new extrabomb (new point 200 200) (screenW / mapW) (screenH / mapH) (screenH / mapH / 2)
 
 		method movePlayer (dir : char) =
 			if not player#moving then
@@ -72,5 +73,6 @@ class state (mapW : int)
 		
 		method drawState =
 			Array.iter drawArray gameArray ;
-			player#draw
+			player#draw;
+			powerbomb#draw
 end
