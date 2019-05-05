@@ -15,8 +15,8 @@ let window_initialize () =
 
 let run state : unit =
   (* flush_kp was found as a bandaid patch to Ocaml's spotty event handling
-     at https://stackoverflow.com/questions/6390631/ocaml-module-graphics-queuing-keypresses
-     from user Benoit Fraikin *)
+     at https://stackoverflow.com/questions/6390631/ocaml-module-graphics-
+     queuing-keypresses from user Benoit Fraikin *)
   let flush_kp () = while key_pressed () do
                       let _ = read_key ()
                       in ()
