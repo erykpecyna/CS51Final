@@ -123,7 +123,7 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
 
     method getArrCoords (objW : int) (objH : int) =
       let (x, y) = this#getSquareCoords in
-      x / objW, y / objW
+      x / objW, y / objH
 
     method xPos = pos#x
     method yPos = pos#y
