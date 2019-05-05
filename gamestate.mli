@@ -16,7 +16,7 @@ class state : int -> int -> int -> int -> object
 
   method tickExploding : unit
 
-  method explode : int -> int -> bomb : unit
+  method explode : int -> int -> bomb -> unit
 
   method movePlayer : char -> unit
 
