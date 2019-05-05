@@ -188,11 +188,11 @@ class state (mapW : int)
 		  | Empty
 			| Exploding _ ->
 			enemy#move (newx * objectWidth)
-								 (newy * objectHeight); moveEnemies (Random.int 5) dir)
+								 (newy * objectHeight); moveEnemies (Random.int 5) dir
 			| Powerup p ->
 			enemy#move (newx * objectWidth)
-								 (newy * objectHeight); moveEnemies (Random.int 5) dir)
-			| _ -> ()
+								 (newy * objectHeight); moveEnemies (Random.int 5) dir
+			| _ -> ())
 
 		method drawState =
 			Array.iter drawArray gameArray ;
