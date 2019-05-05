@@ -18,7 +18,7 @@ let generateMap (w : int) (* width of game map *)
 	for x = 0 to (w - 1) do
 		for y = 0 to (h - 1) do
 			if (x = 0 || x = w - 1 || y = 0 || y = h - 1 ||
-				 (x mod 2 = 0 && y mod 2 = 0)) then
+					(x mod 2 = 0 && y mod 2 = 0)) then
 				map.(x).(y) <- Wall (new wall (new point (x*xwidth) (y*ywidth))
 																			xwidth
 																			ywidth)
@@ -63,7 +63,7 @@ class state (mapW : int)
 		val mutable won = false
 		val player = new player
 													(new point (screenW / mapW)
-																		 (screenH / mapH))
+																			(screenH / mapH))
 													(screenH / mapH / 2)
 													(screenW / mapW)
 													(screenH / mapH)
@@ -83,8 +83,8 @@ class state (mapW : int)
 									bomblist
 
 		(* Decrease timer on exploding tiles *)
-    method tickExploding =
-      ObjSet.iter (fun (x, y) ->
+		method tickExploding =
+			ObjSet.iter (fun (x, y) ->
 										match gameArray.(x).(y) with
 										| Exploding e ->
 											if e#tick then
@@ -110,19 +110,19 @@ class state (mapW : int)
 				| Empty -> explode' x y; true
 				| Wall _ -> false
 				| Box _ ->
-          let rand = Random.int 10 in
-          if rand = 1 then 
-            gameArray.(x).(y) <- 
+					let rand = Random.int 10 in
+					if rand = 1 then 
+						gameArray.(x).(y) <- 
 							Powerup (new extrabomb (new point (x*objectWidth) (y*objectHeight))
-																		 objectWidth
-																		 objectHeight)
-          else if rand = 2 then
-            gameArray.(x).(y) <- 
+																			objectWidth
+																			objectHeight)
+					else if rand = 2 then
+						gameArray.(x).(y) <- 
 							Powerup (new firepower (new point (x*objectWidth) (y*objectHeight))
-																		 objectWidth
-																		 objectHeight)
+																			objectWidth
+																			objectHeight)
 					else explode' x y;
-          false
+					false
 				| Bomb b -> this#explode x y b; false
 				| Exploding e -> true
 				| _ -> true
@@ -213,10 +213,10 @@ class state (mapW : int)
 				| Powerup _
 				| Box _
 				| Bomb _ -> enemy#move (newx * objectWidth)
-															 (newy * objectHeight)
+																(newy * objectHeight)
 				| Exploding _ ->
 					enemy#move (newx * objectWidth)
-										 (newy * objectHeight);
+											(newy * objectHeight);
 					enemy#draw;
 					enemy#draw;
 					let check = List.nth enemylist i in
