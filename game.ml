@@ -1,7 +1,7 @@
-open Graphics
-open Gameobj
-open Util
-open GameState
+open Graphics ;;
+open Gameobj ;;
+open Util ;;
+open GameState ;;
 
 (* To be used for animation *)
 let rec delay (sec: float) : unit =
@@ -16,7 +16,7 @@ let window_initialize () =
   display_mode false;;
 
 (* Takes a game state and runs it until the game ends *)
-let run state : unit = 
+let run state : unit =
   (* flush_kp was found as a bandaid patch to Ocaml's spotty event handling
      at https://stackoverflow.com/questions/6390631/ocaml-module-graphics-queuing-keypresses
      from user Benoit Fraikin *)
@@ -24,7 +24,7 @@ let run state : unit =
                       let _ = read_key ()
                       in ()
                   done in
-  
+
   (* Make some Enemies *)
   state#makeEnemies 3;
 
@@ -55,7 +55,7 @@ let run state : unit =
   delay 0.5;
   clear_graph ();
   set_color black;
-  fill_rect 0 0 1200 900; 
+  fill_rect 0 0 1200 900;
   set_color white;
   moveto 600 450;
   if state#won then
