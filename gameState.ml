@@ -19,13 +19,13 @@ let generateMap (w : int)
 		for y = 0 to (h - 1) do
 		if (x = 0 || x = w - 1 || y = 0 || y = h - 1
 				|| (x mod 2 = 0 && y mod 2 = 0)) then
-			map.(x).(y) <- Wall (new wall 
+			map.(x).(y) <- Wall (new wall
 																(new point (x*xwidth) (y*ywidth))
 																xwidth
 																ywidth)
 		else
 		let rand = Random.int 2 in
-		if rand = 1 then map.(x).(y) <- Box (new box 
+		if rand = 1 then map.(x).(y) <- Box (new box
 																						(new point (x*xwidth) (y*ywidth))
 																						xwidth
 																						ywidth)
@@ -37,7 +37,7 @@ let generateMap (w : int)
 	map.(1).(2) <- Empty ;
 	map ;;
 
-let drawArray = 
+let drawArray =
 	fun arr -> Array.iter (fun obj -> match obj with
 						   | Empty -> ()
 						   | Box b -> b#draw
@@ -47,7 +47,7 @@ let drawArray =
 							 | Powerup p -> p#draw)
 						   arr ;;
 
-class state (mapW : int) 
+class state (mapW : int)
 						(mapH : int)
 						(screenW : int)
 						(screenH : int) =
@@ -57,12 +57,19 @@ class state (mapW : int)
 		val gameArray = generateMap mapW mapH screenW screenH
 		val mutable bomblist = ObjSet.empty
 		val mutable explodinglist = ObjSet.empty
+		val mutable prev_dir = 0
 		val player = new player
 													(new point (screenW / mapW)
 																		 (screenH / mapH))
 													(screenH / mapH / 2)
 													(screenW / mapW)
 													(screenH / mapH)
+		val enemy = new enemy
+		                     (new point (screenW) (screenH))
+												 (screenH / 2)
+												 (screenW)
+												 (screenH)
+
 
 		method tickBombs =
 			let run = ref true in
@@ -94,9 +101,9 @@ class state (mapW : int)
 				match check with
 				| Empty -> explode' x y; true
 				| Wall _ -> false
-				| Box _ -> 
+				| Box _ ->
           let rand = Random.int 25 in
-          if rand = 1 then 
+          if rand = 1 then
             gameArray.(x).(y) <- Powerup (new extrabomb
 																				    (new point (x*objectWidth) (y*objectHeight))
 																				    objectWidth
@@ -141,22 +148,22 @@ class state (mapW : int)
 						(player#dropbomb;
 						let (x, y) = player#getArrCoords objectWidth objectHeight in
 						if gameArray.(x).(y) = Empty then
-							(gameArray.(x).(y) <- Bomb (new bomb 
+							(gameArray.(x).(y) <- Bomb (new bomb
 																							(new point player#xPos player#yPos)
 																							(objectHeight/2));
 							bomblist <- ObjSet.add (x,y) bomblist)))
-				else 
+				else
 				(let mov = match dir with
 				| 'w' -> (0, 1)
 				| 'a' -> (-1, 0)
 				| 's' -> (0, -1)
-				| 'd' -> (1, 0) 
+				| 'd' -> (1, 0)
 				| _ -> (0, 0) in
 				let (oldx, oldy) = player#getArrCoords objectWidth objectHeight in
-				let (newx, newy) = oldx + fst mov, oldy + snd mov in 
+				let (newx, newy) = oldx + fst mov, oldy + snd mov in
 				match gameArray.(newx).(newy) with
 				| Empty
-				| Exploding _ -> 
+				| Exploding _ ->
 					player#move (newx * objectWidth)
 											(newy * objectHeight)
 				| Powerup p ->
@@ -167,9 +174,28 @@ class state (mapW : int)
 											(newy * objectHeight)
 				| _ -> ()))
 
-		method moveEnemies = ()
+		method rec moveEnemies (dir : int) (prev : int) =
+		  if dir = prev then moveEnemies (Random.int 4) prev
+			else (let mov = match dir with
+		  | 0 -> (0, 1)
+		  | 1 -> (-1, 0)
+		  | 2 -> (0, -1)
+		  | 3 -> (1, 0)
+		  | _ -> (0, 0) in
+		  let (oldx, oldy) = enemy#getArrCoords objectWidth objectHeight in
+		  let (newx, newy) = oldx + fst mov, oldy + snd mov in
+		  match gameArray.(newx).(newy) with
+		  | Empty
+			| Exploding _ ->
+			enemy#move (newx * objectWidth)
+								 (newy * objectHeight); moveEnemies (Random.int 5) dir)
+			| Powerup p ->
+			enemy#move (newx * objectWidth)
+								 (newy * objectHeight); moveEnemies (Random.int 5) dir)
+			| _ -> ()
 
 		method drawState =
 			Array.iter drawArray gameArray ;
 			player#draw
+			enemy#draw
 end

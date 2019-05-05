@@ -2,7 +2,7 @@ open Graphics ;;
 open Util ;;
 
 (*.............................................................................
-  Graphical Objects 
+  Graphical Objects
   This class provides a basis for every object in the game. The game objects
   will necessarily have more functionality, but the drawable object will
   necessitate their ability to be drawn on the screen
@@ -13,7 +13,7 @@ class virtual drawable (p : point) =
     val pos : point = p
 
     method virtual draw : unit
-  end 
+  end
 
 class wall (p : point) (w : int) (h : int) =
   object
@@ -68,10 +68,10 @@ class powerup (p : point) (w : int) (h: int) =
     method draw =
       set_color (rgb 0 0 0) ;
       fill_rect p#x p#y w h
-  end 
+  end
 
 class extrabomb (p: point) (w: int) (h: int) =
-	object 
+	object
 		inherit powerup p w h as super
     val id = 1
 
@@ -79,12 +79,12 @@ class extrabomb (p: point) (w: int) (h: int) =
 			set_color (rgb 255 255 0) ;
 			fill_rect p#x p#y w h ;
 			set_color (rgb 0 0 0) ;
-			let rad = h/2 in 
-			fill_circle (p#x + rad) (p#y + rad) rad 
+			let rad = h/2 in
+			fill_circle (p#x + rad) (p#y + rad) rad
 	end
 
 class firepower (p: point) (w: int) (h: int) =
-	object 
+	object
 		inherit powerup p w h as super
     val id = 2
 
@@ -92,8 +92,8 @@ class firepower (p: point) (w: int) (h: int) =
 			set_color (rgb 255 255 0) ;
 			fill_rect p#x p#y w h ;
 			set_color (rgb 255 0 0) ;
-      let rad = h/2 in 
-			fill_circle (p#x + rad) (p#y + rad) rad 
+      let rad = h/2 in
+			fill_circle (p#x + rad) (p#y + rad) rad
 	end
 
 (* Character Types *)
@@ -101,12 +101,12 @@ class firepower (p: point) (w: int) (h: int) =
 class moveable (p : point) (rad : int) (w : int) (h : int) =
   object (this)
     inherit drawable p
-    val mutable counter = 0 
-		val mutable moving = 0 
-		val mutable fin = 0 
+    val mutable counter = 0
+		val mutable moving = 0
+		val mutable fin = 0
     val mutable animJump = 0
     val teleport = 3
-			
+
     method animate =
       if counter = 2 then
         ((if moving = 1 then pos#moveTo fin pos#y
@@ -118,7 +118,7 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
         counter <- counter + 1)
 
     method moving = moving <> 0
-    
+
     method move (x: int) (y: int) =
 			if moving = 0 then
         (let xM = pos#y = y in
@@ -127,7 +127,7 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
         animJump <- if xM then (fin - pos#x) / 3
                     else (fin - pos#y) / 3 ;
         counter <- 0;
-        this#animate)     
+        this#animate)
 
     method getArrCoords (objW : int) (objH : int) =
       p#x / objW, p#y / objH
@@ -155,8 +155,19 @@ class player (p : point) (rad : int) (w : int) (h : int) =
     method addbomb = bombcount <- bombcount + 1
   end
 
+class enemy (p : point) (rad : int) (w : int) (h : int) =
+  object (this)
+    inherit player p rad w h as super
+
+    method !draw =
+      set_color (rgb 255 0 0) ;
+      if moving <> 0 then this#animate ;
+      fill_circle (p#x + rad) (p#y + rad) rad
+  end
+
+
 (*.............................................................................
-  Game Object Types 
+  Game Object Types
   These types differentiate between the types objects that may need to be
   created
 .............................................................................*)

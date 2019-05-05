@@ -13,7 +13,7 @@ let window_initialize () =
   auto_synchronize false;
   display_mode false;;
 
-let run state : unit = 
+let run state : unit =
   (* flush_kp was found as a bandaid patch to Ocaml's spotty event handling
      at https://stackoverflow.com/questions/6390631/ocaml-module-graphics-queuing-keypresses
      from user Benoit Fraikin *)
@@ -21,7 +21,7 @@ let run state : unit =
                       let _ = read_key ()
                       in ()
                   done in
-  
+
   (* Open a graphics window and start the game loop *)
   window_initialize() ;
   while true do
@@ -37,6 +37,7 @@ let run state : unit =
     (* Handle Game Object Movement/action *)
     state#tickExploding;
     state#tickBombs;
+    state#moveEnemies Down;
 
     (* Clear old frame and draw new one *)
     clear_graph ();
