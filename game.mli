@@ -7,4 +7,4 @@ val delay : float -> unit
 
 val window_initialize : unit -> unit
 
-val state : unit
+val run : state -> unit

@@ -9,10 +9,9 @@ class wall : point -> int -> int -> object
   inherit drawable
 
   method draw : unit
+ end
 
-end
-
-class box : point -> int -> int -> object 
+class box : point -> int -> int -> object
   inherit drawable
 
   method draw : unit
