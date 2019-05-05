@@ -24,8 +24,8 @@ let generateMap (w : int)
 																xwidth
 																ywidth)
 		else
-		let rand = Random.int 2 in
-		if rand = 1 then map.(x).(y) <- Box (new box 
+		let rand = Random.self_init (); Random.int 10 in
+		if rand < 7 then map.(x).(y) <- Box (new box 
 																						(new point (x*xwidth) (y*ywidth))
 																						xwidth
 																						ywidth)
@@ -60,6 +60,7 @@ class state (mapW : int)
 		val mutable enemylist = []
 		val mutable moveEnemies = 0
 		val mutable alive = true
+		val mutable won = false
 		val player = new player
 													(new point (screenW / mapW)
 																		 (screenH / mapH))
@@ -68,6 +69,7 @@ class state (mapW : int)
 													(screenH / mapH)
 
 		method alive = alive
+		method won = won
 
 		method tickBombs =
 			let run = ref true in
@@ -102,7 +104,7 @@ class state (mapW : int)
 				| Empty -> explode' x y; true
 				| Wall _ -> false
 				| Box _ -> 
-          let rand = Random.int 25 in
+          let rand = Random.int 10 in
           if rand = 1 then 
             gameArray.(x).(y) <- Powerup (new extrabomb
 																				    (new point (x*objectWidth) (y*objectHeight))
@@ -165,7 +167,10 @@ class state (mapW : int)
 				| Empty ->
 					player#move (newx * objectWidth)
 											(newy * objectHeight)
-				| Exploding _ -> alive <- false
+				| Exploding _ -> 
+					alive <- false;
+					player#move (newx * objectWidth)
+											(newy * objectHeight)
 				| Powerup p ->
 					(if p#id = 1 then player#addbomb
 					else player#addblastradius);
@@ -186,7 +191,7 @@ class state (mapW : int)
 			done
 
 		method moveEnemies =
-			let f = fun enemy ->
+			let f = fun i enemy ->
 				let mov = match enemy#getdir with
 				| 'L' -> (-1, 0)
 				| 'R' -> (1, 0)
@@ -201,10 +206,16 @@ class state (mapW : int)
 				| Box _
 				| Bomb _ -> enemy#move (newx * objectWidth)
 															 (newy * objectHeight)
+				| Exploding _ ->
+					enemy#move (newx * objectWidth)
+										 (newy * objectHeight);
+					enemy#draw;
+					let check = List.nth enemylist i in
+					enemylist <- List.filter (fun x -> x <> check) enemylist
 				| _ -> ()
 			in
 			if moveEnemies = 3 then 
-				(List.iter f enemylist;
+				(List.iteri f enemylist;
 				moveEnemies <- 0)
 			else
 			moveEnemies <- moveEnemies + 1
@@ -222,4 +233,7 @@ class state (mapW : int)
 											alive <- false;
 											enemy#draw) enemylist ;
 			player#draw;
+
+			(* Check for win *)
+			won <- List.length enemylist = 0
 end

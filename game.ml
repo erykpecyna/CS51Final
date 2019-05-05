@@ -26,13 +26,13 @@ let run state : unit =
                   done in
   
   (* Make some Enemies *)
-  state#makeEnemies 3;
+  state#makeEnemies 1;
 
   (* Open a graphics window and start the game loop *)
   window_initialize();
   set_window_title "Ocaml Bomberman";
 
-  while state#alive do
+  while state#alive && not state#won do
     (* Handle Keyboard input *)
     let inputstatus = wait_next_event [Poll] in
     if (key_pressed ()) then
@@ -58,7 +58,9 @@ let run state : unit =
   fill_rect 0 0 1200 900; 
   set_color white;
   moveto 600 450;
-  draw_string "Game Over";
+  if state#won then
+    draw_string "Game Won"
+  else draw_string "Game Over";
   synchronize ();
   delay 1.5
 
