@@ -72,30 +72,30 @@ class powerup (p : point) (w : int) (h: int) =
   end 
 
 class extrabomb (p: point) (w: int) (h: int) =
-	object 
-		inherit powerup p w h as super
+  object 
+    inherit powerup p w h as super
     val! id = 1
 
-		method! draw =
-			set_color (rgb 255 255 0) ;
-			fill_rect p#x p#y w h ;
-			set_color (rgb 0 0 0) ;
-			let rad = h/2 in 
-			fill_circle (p#x + rad) (p#y + rad) rad 
-	end
+    method! draw =
+      set_color (rgb 255 255 0) ;
+      fill_rect p#x p#y w h ;
+      set_color (rgb 0 0 0) ;
+      let rad = h/2 in 
+      fill_circle (p#x + rad) (p#y + rad) rad 
+  end
 
 class firepower (p: point) (w: int) (h: int) =
-	object 
-		inherit powerup p w h as super
+  object 
+    inherit powerup p w h as super
     val! id = 2
 
-		method! draw =
-			set_color (rgb 255 255 0) ;
-			fill_rect p#x p#y w h ;
-			set_color (rgb 255 0 0) ;
+    method! draw =
+      set_color (rgb 255 255 0) ;
+      fill_rect p#x p#y w h ;
+      set_color (rgb 255 0 0) ;
       let rad = h/2 in 
-			fill_circle (p#x + rad) (p#y + rad) rad 
-	end
+      fill_circle (p#x + rad) (p#y + rad) rad 
+  end
 
 (* Character Types *)
 
@@ -103,11 +103,11 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
   object (this)
     inherit drawable p
     val mutable counter = 0 
-		val mutable dirmoving = 0 
-		val mutable fin = 0 
+    val mutable dirmoving = 0 
+    val mutable fin = 0 
     val mutable animJump = 0
     val teleport = 3
-			
+      
     method animate =
       if counter = 2 then
         ((if dirmoving = 1 then pos#moveTo fin pos#y
@@ -121,7 +121,7 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
     method moving = dirmoving <> 0
     
     method move (x: int) (y: int) =
-			if dirmoving = 0 then
+      if dirmoving = 0 then
         (let xM = pos#y = y in
         dirmoving <- if xM then 1 else 2;
         fin <- if xM then x else y;

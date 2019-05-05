@@ -63,7 +63,7 @@ class state (mapW : int)
     val mutable won = false
     val player = new player
                           (new point (screenW / mapW)
-                                      (screenH / mapH))
+                                     (screenH / mapH))
                           (screenH / mapH / 2)
                           (screenW / mapW)
                           (screenH / mapH)
