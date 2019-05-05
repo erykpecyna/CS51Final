@@ -170,21 +170,22 @@ class state (mapW : int)
         | _ -> (0, 0) in
         let (oldx, oldy) = player#getArrCoords in
         let (newx, newy) = oldx + fst mov, oldy + snd mov in 
-        match gameArray.(newx).(newy) with
-        | Empty ->
+        match gameArray.(newx).(newy), gameArray.(oldx).(oldy) with
+        | Empty, _ ->
           player#move (newx * objectWidth)
                       (newy * objectHeight)
-        | Exploding _ -> 
+        | Exploding _, _
+        | _, Exploding _ -> 
           alive <- false;
           player#move (newx * objectWidth)
                       (newy * objectHeight)
-        | Powerup p ->
+        | Powerup p, _ ->
           (if p#id = 1 then player#addbomb
           else player#addblastradius);
           gameArray.(newx).(newy) <- Empty;
           player#move (newx * objectWidth)
                       (newy * objectHeight)
-        | _ -> ()))
+        | _, _ -> ()))
 
     method makeEnemies (num : int) =
       for _ = 1 to num do
@@ -208,20 +209,22 @@ class state (mapW : int)
         | _ -> (0, 0) in
         let (oldx, oldy) = enemy#getArrCoords in
         let (newx, newy) = oldx + fst mov, oldy + snd mov in
-        match gameArray.(newx).(newy) with
-        | Empty
-        | Powerup _
-        | Box _
-        | Bomb _ -> enemy#move (newx * objectWidth)
+        match gameArray.(newx).(newy), gameArray.(oldx).(oldy) with
+        | Empty, _
+        | Powerup _, _
+        | Box _, _
+        | Bomb _, _ -> enemy#move (newx * objectWidth)
                                 (newy * objectHeight)
-        | Exploding _ ->
+        | Exploding _, _
+        | _, Exploding _
+        | Exploding _, Exploding _ ->
           enemy#move (newx * objectWidth)
                       (newy * objectHeight);
           enemy#draw;
           enemy#draw;
           let check = List.nth enemylist i in
           enemylist <- List.filter (fun x -> x <> check) enemylist
-        | _ -> ()
+        | _, _ -> ()
       in
       (* Slow down enemy movement *)
       if moveEnemies = 3 then 
