@@ -4,7 +4,7 @@ open Util ;;
 
 val generateMap : int -> int -> int -> int -> unit
 
-val drawArray
+val drawArray : unit
 
 class state : int -> int -> int -> int -> object
 
@@ -24,6 +24,6 @@ class state : int -> int -> int -> int -> object
 
   method moveEnemies : unit
 
-  method drawState : unit 
+  method drawState : unit
 
 end
