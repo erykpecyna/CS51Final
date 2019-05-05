@@ -174,7 +174,7 @@ class state (mapW : int)
 											(newy * objectHeight)
 				| _ -> ()))
 
-		method rec moveEnemies (dir : int) (prev : int) =
+		method moveEnemies (dir : int) (prev : int) =
 		  if dir = prev then moveEnemies (Random.int 4) prev
 			else (let mov = match dir with
 		  | 0 -> (0, 1)

@@ -37,7 +37,7 @@ let run state : unit =
     (* Handle Game Object Movement/action *)
     state#tickExploding;
     state#tickBombs;
-    state#moveEnemies Down;
+    state#moveEnemies 1 0;
 
     (* Clear old frame and draw new one *)
     clear_graph ();
