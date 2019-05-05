@@ -129,8 +129,8 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
         counter <- 0;
         this#animate)     
 
-    method getArrCoords (objW : int) (objH : int) =
-      p#x / objW, p#y / objH
+    method getArrCoords =
+      p#x / w, p#y / h
 
     method xPos = pos#x
     method yPos = pos#y
@@ -153,6 +153,36 @@ class player (p : point) (rad : int) (w : int) (h : int) =
     method bombcount = bombcount
     method dropbomb = bombcount <- bombcount - 1
     method addbomb = bombcount <- bombcount + 1
+  end
+
+class enemy (p : point) (rad : int) (w : int) (h : int) =
+  object (this)
+    inherit moveable p rad w h
+    val mutable lastdir = 'D'
+    val mutable even = false
+    val dirlist = ['L'; 'R'; 'U'; 'D']
+
+    method getdir =
+    let getmatch x =
+      match x with
+      | 'L' -> 'R'
+			| 'R' -> 'L'
+			| 'U' -> 'D'
+			| 'D' -> 'U'
+      | _ -> ' ' in
+      if even then
+        (even <- not even; lastdir)
+      else
+      (even <- not even; 
+      let rand = Random.int 3 in
+      let dir = List.nth (List.filter (fun x -> x <> getmatch lastdir)
+                            dirlist) rand in
+      lastdir <- dir; dir)
+
+    method! draw =
+      set_color (rgb 255 0 0);
+      if moving <> 0 then this#animate ;
+      fill_circle (p#x + rad) (p#y + rad) rad
   end
 
 (*.............................................................................
