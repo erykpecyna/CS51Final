@@ -1,15 +1,15 @@
 open Array ;;
 open Gameobj ;;
 open Util ;;
-module ObjSet = Set.Make (struct
-												type t = (int * int)
-												let compare = compare
-											end) ;;
+module ObjSet =	Set.Make (struct
+														type t = (int * int)
+														let compare = compare
+													end) ;;
 
 (* Generates a new map with boxes placed to allow for a proper start for all
 	players. Takes arguments for the size of the map. *)
-let generateMap (w : int)
-								(h : int)
+let generateMap (w : int) (* width of game map *)
+								(h : int) (* height of game map *)
 								(screenwidth : int)
 								(screenheight : int) =
 	let xwidth = screenwidth / w in
@@ -17,35 +17,36 @@ let generateMap (w : int)
 	let map = make_matrix w h Empty in
 	for x = 0 to (w - 1) do
 		for y = 0 to (h - 1) do
-		if (x = 0 || x = w - 1 || y = 0 || y = h - 1
-				|| (x mod 2 = 0 && y mod 2 = 0)) then
-			map.(x).(y) <- Wall (new wall 
-																(new point (x*xwidth) (y*ywidth))
-																xwidth
-																ywidth)
-		else
-		let rand = Random.self_init (); Random.int 10 in
-		if rand < 7 then map.(x).(y) <- Box (new box 
-																						(new point (x*xwidth) (y*ywidth))
-																						xwidth
-																						ywidth)
-		else map.(x).(y) <- Empty
+			if (x = 0 || x = w - 1 || y = 0 || y = h - 1 ||
+				 (x mod 2 = 0 && y mod 2 = 0)) then
+				map.(x).(y) <- Wall (new wall (new point (x*xwidth) (y*ywidth))
+																			xwidth
+																			ywidth)
+			else
+			let rand = Random.self_init (); Random.int 10 in
+			if rand < 7 then 
+				map.(x).(y) <- Box (new box (new point (x*xwidth) (y*ywidth))
+																		xwidth
+																		ywidth)
+			else map.(x).(y) <- Empty
 		done
 	done ;
 	map.(1).(1) <- Empty ;
 	map.(2).(1) <- Empty ;
 	map.(1).(2) <- Empty ;
+	map.(3).(1) <- Empty ;
+	map.(1).(3) <- Empty ;
 	map ;;
 
 let drawArray = 
 	fun arr -> Array.iter (fun obj -> match obj with
-						   | Empty -> ()
-						   | Box b -> b#draw
-						   | Wall w -> w#draw
-						   | Bomb b -> b#draw
-							 | Exploding e -> e#draw
-							 | Powerup p -> p#draw)
-						   arr ;;
+																		| Empty -> ()
+																		| Box b -> b#draw
+																		| Wall w -> w#draw
+																		| Bomb b -> b#draw
+																		| Exploding e -> e#draw
+																		| Powerup p -> p#draw)
+												arr ;;
 
 class state (mapW : int) 
 						(mapH : int)
@@ -57,7 +58,6 @@ class state (mapW : int)
 		val gameArray = generateMap mapW mapH screenW screenH
 		val mutable bomblist = ObjSet.empty
 		val mutable explodinglist = ObjSet.empty
-		val mutable enemylist = []
 		val mutable moveEnemies = 0
 		val mutable alive = true
 		val mutable won = false
@@ -67,10 +67,12 @@ class state (mapW : int)
 													(screenH / mapH / 2)
 													(screenW / mapW)
 													(screenH / mapH)
+		val mutable enemylist = []
 
 		method alive = alive
 		method won = won
 
+		(* Decrease timer on dropped bombs *)
 		method tickBombs =
 			ObjSet.iter (fun (x, y) ->
 										match gameArray.(x).(y) with
@@ -78,17 +80,22 @@ class state (mapW : int)
 											if b#tick then
 												(this#explode x y b)
 										| _ -> bomblist <- ObjSet.remove (x, y) bomblist)
-								bomblist
+									bomblist
 
+		(* Decrease timer on exploding tiles *)
     method tickExploding =
       ObjSet.iter (fun (x, y) ->
-									let Exploding e = gameArray.(x).(y) in
-									if e#tick then
-										(gameArray.(x).(y) <- Empty;
-										explodinglist <- ObjSet.remove (x,y) explodinglist))
-								explodinglist
+										match gameArray.(x).(y) with
+										| Exploding e ->
+											if e#tick then
+												(gameArray.(x).(y) <- Empty;
+												explodinglist <- ObjSet.remove (x,y) explodinglist)
+										| _ -> explodinglist <- ObjSet.remove (x,y) explodinglist)
+									explodinglist
 
+		(* Blow up a bomb whose "fuse" has run out *)
 		method explode (xPos : int) (yPos : int) (b : bomb) =
+			(* Turn a tile into an exploding tile *)
 			let explode' x y =
 				if player#getArrCoords = (x, y) then alive <- false ;
 				gameArray.(x).(y) <- 
@@ -97,28 +104,30 @@ class state (mapW : int)
 										objectWidth
 										objectHeight);
 				explodinglist <- ObjSet.add (x, y) explodinglist in
+			(* Blow up a tile while checking if explosion should continue *)
 			let directionalExplosion x y check =
 				match check with
 				| Empty -> explode' x y; true
 				| Wall _ -> false
-				| Box _ -> 
+				| Box _ ->
           let rand = Random.int 10 in
           if rand = 1 then 
-            gameArray.(x).(y) <- Powerup (new extrabomb
-																				    (new point (x*objectWidth) (y*objectHeight))
-																				    objectWidth
-																				    objectHeight :> powerup)
+            gameArray.(x).(y) <- 
+							Powerup (new extrabomb (new point (x*objectWidth) (y*objectHeight))
+																		 objectWidth
+																		 objectHeight)
           else if rand = 2 then
-            gameArray.(x).(y) <- Powerup (new firepower
-																				    (new point (x*objectWidth) (y*objectHeight))
-																				    objectWidth
-																				    objectHeight :> powerup)
+            gameArray.(x).(y) <- 
+							Powerup (new firepower (new point (x*objectWidth) (y*objectHeight))
+																		 objectWidth
+																		 objectHeight)
 					else explode' x y;
           false
 				| Bomb b -> this#explode x y b; false
 				| Exploding e -> true
 				| _ -> true
 			in
+			(* Blow up bomb and tiles within effective radius *)
 			player#addbomb;
 			bomblist <- ObjSet.remove (xPos, yPos) bomblist;
 			explode' xPos yPos ;
@@ -139,19 +148,19 @@ class state (mapW : int)
 				if !right then
 					(let check = gameArray.(xPos + i).(yPos) in
 					right := directionalExplosion (xPos + i) yPos check)
-			done
+				done
 
+		(* Handle player movement and bomb drops *)
 		method movePlayer (dir : char) =
 			if not player#moving then
 				(if dir = ' ' then
 					(if player#bombcount > 0 then
 						(player#dropbomb;
 						let (x, y) = player#getArrCoords in
-						if gameArray.(x).(y) = Empty then
-							(gameArray.(x).(y) <- Bomb (new bomb 
-																							(new point player#xPos player#yPos)
-																							(objectHeight/2));
-							bomblist <- ObjSet.add (x,y) bomblist)))
+						gameArray.(x).(y) <- Bomb (new bomb 
+																						(new point player#xPos player#yPos)
+																						(objectHeight/2));
+						bomblist <- ObjSet.add (x,y) bomblist))
 				else 
 				(let mov = match dir with
 				| 'w' -> (0, 1)
@@ -185,9 +194,10 @@ class state (mapW : int)
 										(objectHeight / 2)
 										objectWidth
 										objectHeight
-										:: enemylist
+					:: enemylist
 			done
-
+		
+		(* Move all enemies on map *)
 		method moveEnemies =
 			let f = fun i enemy ->
 				let mov = match enemy#getdir with
@@ -208,10 +218,12 @@ class state (mapW : int)
 					enemy#move (newx * objectWidth)
 										 (newy * objectHeight);
 					enemy#draw;
+					enemy#draw;
 					let check = List.nth enemylist i in
 					enemylist <- List.filter (fun x -> x <> check) enemylist
 				| _ -> ()
 			in
+			(* Slow down enemy movement *)
 			if moveEnemies = 3 then 
 				(List.iteri f enemylist;
 				moveEnemies <- 0)
@@ -234,4 +246,4 @@ class state (mapW : int)
 
 			(* Check for win *)
 			won <- List.length enemylist = 0
-end
+	end

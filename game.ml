@@ -26,7 +26,7 @@ let run state : unit =
                   done in
   
   (* Make some Enemies *)
-  state#makeEnemies 1;
+  state#makeEnemies 3;
 
   (* Open a graphics window and start the game loop *)
   window_initialize();

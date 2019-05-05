@@ -4,7 +4,7 @@ open Util ;;
 (*.............................................................................
   Graphical Objects 
   The drawable class provides a basis for every object in the game.
-  The game objects necessarily have more functionality, but the drawable
+  Other game objects necessarily have more functionality, but the drawable
   object will necessitate their ability to be drawn on the screen
 .............................................................................*)
 
@@ -53,6 +53,7 @@ class exploding (p : point) (w : int) (h : int) =
     val mutable timer = 10
 
     method tick = timer <- timer - 1; timer <= 0
+    
     method draw =
       set_color (rgb 255 247 0) ;
       fill_rect p#x p#y w h
@@ -73,7 +74,7 @@ class powerup (p : point) (w : int) (h: int) =
 class extrabomb (p: point) (w: int) (h: int) =
 	object 
 		inherit powerup p w h as super
-    val id = 1
+    val! id = 1
 
 		method! draw =
 			set_color (rgb 255 255 0) ;
@@ -86,7 +87,7 @@ class extrabomb (p: point) (w: int) (h: int) =
 class firepower (p: point) (w: int) (h: int) =
 	object 
 		inherit powerup p w h as super
-    val id = 2
+    val! id = 2
 
 		method! draw =
 			set_color (rgb 255 255 0) ;
@@ -102,32 +103,31 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
   object (this)
     inherit drawable p
     val mutable counter = 0 
-		val mutable moving = 0 
+		val mutable dirmoving = 0 
 		val mutable fin = 0 
     val mutable animJump = 0
     val teleport = 3
 			
     method animate =
       if counter = 2 then
-        ((if moving = 1 then pos#moveTo fin pos#y
+        ((if dirmoving = 1 then pos#moveTo fin pos#y
         else pos#moveTo pos#x fin);
-        moving <- 0)
+        dirmoving <- 0)
       else
-        (if moving = 1 then pos#move animJump 0
+        (if dirmoving = 1 then pos#move animJump 0
         else pos#move 0 animJump;
         counter <- counter + 1)
 
-    method moving = moving <> 0
+    method moving = dirmoving <> 0
     
     method move (x: int) (y: int) =
-			if moving = 0 then
+			if dirmoving = 0 then
         (let xM = pos#y = y in
-        moving <- if xM then 1 else 2;
+        dirmoving <- if xM then 1 else 2;
         fin <- if xM then x else y;
         animJump <- if xM then (fin - pos#x) / 3
                     else (fin - pos#y) / 3 ;
-        counter <- 0;
-        this#animate)     
+        counter <- 0)     
 
     method getArrCoords =
       p#x / w, p#y / h
@@ -137,13 +137,13 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
 
     method draw =
       set_color (rgb 0 255 0) ;
-      if moving <> 0 then this#animate ;
+      if dirmoving <> 0 then this#animate ;
       fill_circle (p#x + rad) (p#y + rad) rad
   end
 
 class player (p : point) (rad : int) (w : int) (h : int) =
   object (this)
-    inherit moveable p rad w h
+    inherit moveable p rad w h as super
 
     val mutable bombcount = 1
     val mutable blastradius = 1
@@ -153,6 +153,11 @@ class player (p : point) (rad : int) (w : int) (h : int) =
     method bombcount = bombcount
     method dropbomb = bombcount <- bombcount - 1
     method addbomb = bombcount <- bombcount + 1
+
+    (* Skip first frame of player animation for snappier control response*)
+    method! move (x : int) (y : int) =
+      super#move x y;
+      super#animate;
   end
 
 class enemy (p : point) (rad : int) (w : int) (h : int) =
@@ -163,25 +168,25 @@ class enemy (p : point) (rad : int) (w : int) (h : int) =
     val dirlist = ['L'; 'R'; 'U'; 'D']
 
     method getdir =
-    let getmatch x =
-      match x with
-      | 'L' -> 'R'
-			| 'R' -> 'L'
-			| 'U' -> 'D'
-			| 'D' -> 'U'
-      | _ -> ' ' in
-      if even then
-        (even <- not even; lastdir)
-      else
-      (even <- not even; 
-      let rand = Random.int 3 in
-      let dir = List.nth (List.filter (fun x -> x <> getmatch lastdir)
-                            dirlist) rand in
-      lastdir <- dir; dir)
+      let getmatch x =
+        match x with
+        | 'L' -> 'R'
+        | 'R' -> 'L'
+        | 'U' -> 'D'
+        | 'D' -> 'U'
+        | _ -> ' ' in
+        if even then
+          (even <- not even; lastdir)
+        else
+        (even <- not even; 
+        let rand = Random.int 3 in
+        let dir = List.nth (List.filter (fun x -> x <> getmatch lastdir)
+                              dirlist) rand in
+        lastdir <- dir; dir)
 
     method! draw =
       set_color (rgb 255 0 0);
-      if moving <> 0 then this#animate ;
+      if dirmoving <> 0 then this#animate ;
       fill_circle (p#x + rad) (p#y + rad) rad
   end
 
