@@ -1,0 +1,16 @@
+### Starting build.
+# Target: gameState.ml.depends, tags: { extension:ml, file:gameState.ml, ocaml, ocamldep, quiet, thread, traverse, use_graphics, use_unix }
+/home/epecyna/.opam/4.06.0/bin/ocamldep.opt -modules gameState.ml > gameState.ml.depends # cached
+# Target: gameobj.ml.depends, tags: { extension:ml, file:gameobj.ml, ocaml, ocamldep, quiet, thread, traverse, use_graphics, use_unix }
+/home/epecyna/.opam/4.06.0/bin/ocamldep.opt -modules gameobj.ml > gameobj.ml.depends # cached
+# Target: util.ml.depends, tags: { extension:ml, file:util.ml, ocaml, ocamldep, quiet, thread, traverse, use_graphics, use_unix }
+/home/epecyna/.opam/4.06.0/bin/ocamldep.opt -modules util.ml > util.ml.depends # cached
+# Target: util.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:util.cmo, file:util.ml, implem, ocaml, quiet, thread, traverse, use_graphics, use_unix }
+/home/epecyna/.opam/4.06.0/bin/ocamlc.opt -c -thread -o util.cmo util.ml # cached
+# Target: gameobj.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:gameobj.cmo, file:gameobj.ml, implem, ocaml, quiet, thread, traverse, use_graphics, use_unix }
+/home/epecyna/.opam/4.06.0/bin/ocamlc.opt -c -thread -o gameobj.cmo gameobj.ml # cached
+# Target: gameState.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:gameState.cmo, file:gameState.ml, implem, ocaml, quiet, thread, traverse, use_graphics, use_unix }
+/home/epecyna/.opam/4.06.0/bin/ocamlc.opt -c -thread -o gameState.cmo gameState.ml # cached
+# Target: gameState.byte, tags: { byte, dont_link_with, extension:byte, file:gameState.byte, link, ocaml, program, quiet, thread, traverse, use_graphics, use_unix }
+/home/epecyna/.opam/4.06.0/bin/ocamlc.opt unix.cma graphics.cma -thread threads.cma util.cmo gameobj.cmo gameState.cmo -o gameState.byte
+# Compilation successful.
