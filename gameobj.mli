@@ -20,7 +20,7 @@ end
 class bomb : point -> int -> object
   inherit drawable
 
-  method tick : unit
+  method tick : bool
 
   method draw : unit
  end
@@ -28,7 +28,7 @@ class bomb : point -> int -> object
 class exploding : point -> int -> int -> object
   inherit drawable
 
-  method tick : unit
+  method tick : bool
 
   method draw : unit
  end
