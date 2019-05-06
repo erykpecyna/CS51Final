@@ -90,7 +90,7 @@ class player : point -> int -> int -> int -> object
 class enemy : point -> int -> int -> int -> object
   inherit moveable
 
-  method getdir : unit
+  method getdir : char
 
   method draw : unit
  end
