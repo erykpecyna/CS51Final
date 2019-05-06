@@ -95,4 +95,10 @@ class enemy : point -> int -> int -> int -> object
   method draw : unit
  end
 
-type gameobject
+ type gameobject =
+ | Empty
+ | Wall of wall
+ | Box of box
+ | Bomb of bomb
+ | Exploding of exploding
+ | Powerup of powerup
