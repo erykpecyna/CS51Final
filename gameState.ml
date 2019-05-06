@@ -24,7 +24,7 @@ let generateMap (w : int) (* width of game map *)
                                       ywidth)
       else
       let rand = Random.self_init (); Random.int 10 in
-      if rand < 7 then 
+      if rand < 7 then
         map.(x).(y) <- Box (new box (new point (x*xwidth) (y*ywidth))
                                     xwidth
                                     ywidth)
@@ -38,7 +38,7 @@ let generateMap (w : int) (* width of game map *)
   map.(1).(3) <- Empty ;
   map ;;
 
-let drawArray = 
+let drawArray =
   fun arr -> Array.iter (fun obj -> match obj with
                                     | Empty -> ()
                                     | Box b -> b#draw
@@ -48,7 +48,7 @@ let drawArray =
                                     | Powerup p -> p#draw)
                         arr ;;
 
-class state (mapW : int) 
+class state (mapW : int)
             (mapH : int)
             (screenW : int)
             (screenH : int) =
@@ -98,7 +98,7 @@ class state (mapW : int)
       (* Turn a tile into an exploding tile *)
       let explode' x y =
         if player#getArrCoords = (x, y) then alive <- false ;
-        gameArray.(x).(y) <- 
+        gameArray.(x).(y) <-
           Exploding (new exploding
                     (new point (x*objectWidth) (y*objectHeight))
                     objectWidth
@@ -111,13 +111,13 @@ class state (mapW : int)
         | Wall _ -> false
         | Box _ ->
           let rand = Random.int 10 in
-          if rand = 1 then 
-            gameArray.(x).(y) <- 
+          if rand = 1 then
+            gameArray.(x).(y) <-
               Powerup (new extrabomb (new point (x*objectWidth) (y*objectHeight))
                                       objectWidth
                                       objectHeight)
           else if rand = 2 then
-            gameArray.(x).(y) <- 
+            gameArray.(x).(y) <-
               Powerup (new firepower (new point (x*objectWidth) (y*objectHeight))
                                       objectWidth
                                       objectHeight)
@@ -157,25 +157,25 @@ class state (mapW : int)
           (if player#bombcount > 0 then
             (player#dropbomb;
             let (x, y) = player#getArrCoords in
-            gameArray.(x).(y) <- Bomb (new bomb 
+            gameArray.(x).(y) <- Bomb (new bomb
                                             (new point player#xPos player#yPos)
                                             (objectHeight/2));
             bomblist <- ObjSet.add (x,y) bomblist))
-        else 
+        else
         (let mov = match dir with
         | 'w' -> (0, 1)
         | 'a' -> (-1, 0)
         | 's' -> (0, -1)
-        | 'd' -> (1, 0) 
+        | 'd' -> (1, 0)
         | _ -> (0, 0) in
         let (oldx, oldy) = player#getArrCoords in
-        let (newx, newy) = oldx + fst mov, oldy + snd mov in 
+        let (newx, newy) = oldx + fst mov, oldy + snd mov in
         match gameArray.(newx).(newy), gameArray.(oldx).(oldy) with
         | Empty, _ ->
           player#move (newx * objectWidth)
                       (newy * objectHeight)
         | Exploding _, _
-        | _, Exploding _ -> 
+        | _, Exploding _ ->
           alive <- false;
           player#move (newx * objectWidth)
                       (newy * objectHeight)
@@ -189,7 +189,7 @@ class state (mapW : int)
 
     method makeEnemies (num : int) =
       for _ = 1 to num do
-        enemylist <- 
+        enemylist <-
           new enemy (new point ((mapW - 2) * objectWidth)
                                 ((mapH - 2) * objectHeight))
                     (objectHeight / 2)
@@ -197,7 +197,7 @@ class state (mapW : int)
                     objectHeight
           :: enemylist
       done
-    
+
     (* Move all enemies on map *)
     method moveEnemies =
       let f = fun i enemy ->
@@ -216,8 +216,7 @@ class state (mapW : int)
         | Bomb _, _ -> enemy#move (newx * objectWidth)
                                 (newy * objectHeight)
         | Exploding _, _
-        | _, Exploding _
-        | Exploding _, Exploding _ ->
+        | _, Exploding _ ->
           enemy#move (newx * objectWidth)
                       (newy * objectHeight);
           enemy#draw;
@@ -227,7 +226,7 @@ class state (mapW : int)
         | _, _ -> ()
       in
       (* Slow down enemy movement *)
-      if moveEnemies = 3 then 
+      if moveEnemies = 3 then
         (List.iteri f enemylist;
         moveEnemies <- 0)
       else
@@ -241,7 +240,7 @@ class state (mapW : int)
 
       (* Draw game map and characters *)
       Array.iter drawArray gameArray ;
-      List.iter (fun enemy -> 
+      List.iter (fun enemy ->
                     if enemy#getArrCoords = player#getArrCoords then
                       alive <- false;
                       enemy#draw) enemylist ;
