@@ -94,3 +94,5 @@ class enemy : point -> int -> int -> int -> object
 
   method draw : unit
  end
+
+type gameobject
