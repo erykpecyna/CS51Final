@@ -3,7 +3,7 @@ class point : int -> int -> object
   method x : int
   method y : int
 
-  method pos : float * float
+  method pos : int * int
 
   method move : int -> int -> unit
 
