@@ -1,7 +1,7 @@
-class point : float -> float -> object
+class point : int -> int -> object
 
-  method x : float
-  method y : float
+  method x : int
+  method y : int
 
   method pos : float * float
 
