@@ -1,6 +1,14 @@
 open Array ;;
 open Gameobj ;;
 open Util ;;
+
+(*.............................................................................
+  Game State
+  This file contains the state of the map and the necessary methods needed to
+  alter the state of the map. It also contains the generateMap function that
+  creates the starting map.
+.............................................................................*)
+
 module ObjSet =	Set.Make (struct
                             type t = (int * int)
                             let compare = compare

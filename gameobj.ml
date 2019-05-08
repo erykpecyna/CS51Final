@@ -107,7 +107,8 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
     val mutable fin = 0 
     val mutable animJump = 0
     val teleport = 3
-      
+
+    (* 3-step animation for movement *)  
     method animate =
       if counter = 2 then
         ((if dirmoving = 1 then pos#moveTo fin pos#y
@@ -120,6 +121,7 @@ class moveable (p : point) (rad : int) (w : int) (h : int) =
 
     method moving = dirmoving <> 0
     
+    (* Sets up the start of the 3-step animation *)
     method move (x: int) (y: int) =
       if dirmoving = 0 then
         (let xM = pos#y = y in
@@ -154,7 +156,7 @@ class player (p : point) (rad : int) (w : int) (h : int) =
     method dropbomb = bombcount <- bombcount - 1
     method addbomb = bombcount <- bombcount + 1
 
-    (* Skip first frame of player animation for snappier control response*)
+    (* Skip first frame of player animation for snappier control response *)
     method! move (x : int) (y : int) =
       super#move x y;
       super#animate;

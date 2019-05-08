@@ -3,6 +3,12 @@ open Gameobj ;;
 open Util ;;
 open GameState ;;
 
+(*.............................................................................
+  Game 
+  The functions in this file all work at the highest level of the BomberCaml
+  game. They control things like framerate and the start/end of the game.
+.............................................................................*)
+
 (* To be used for animation *)
 let rec delay (sec: float) : unit =
   try ignore(Thread.delay sec)
@@ -30,7 +36,7 @@ let run state : unit =
 
   (* Open a graphics window and start the game loop *)
   window_initialize();
-  set_window_title "Ocaml Bomberman";
+  set_window_title "BomberCaml";
 
   while state#alive && not state#won do
     (* Handle Keyboard input *)
