@@ -113,6 +113,18 @@ url=false,
 
 
 \begin{document}
+\begin{FlushRight}
+Eryk Pecyna
+\end{FlushRight}\par
+
+\begin{FlushRight}
+Jay Chandra
+\end{FlushRight}\par
+
+\begin{FlushRight}
+Kodi Obika
+\end{FlushRight}\par
+
 \begin{Center}
 \textbf{\uline{BomberCaml: CS51 Final Project}}
 \end{Center}\par
@@ -130,13 +142,11 @@ As our alternative final project, we decided to create the Bomberman video game 
 Bomberman\ is\ a strategy-based video game in which the player, who initially spawns with bombs that self-destruct a few seconds after being dropped, ultimately attempts to eliminate the enemies that initially spawn with the map. One accomplishes this by dropping bombs strategically throughout the map in an attempt to capture the enemy within the blast radius, in which case the enemy is eliminated. Initially, the player can drop only one bomb at a time, which means that each player can have one bomb on the map at a single point in time, and the radius of the bomb explosion is one. The map itself is made of boxes and walls. A wall surrounds the entirety of the map and there are single wall pieces located in every other row and every other column. Boxes are then interspersed between the walls and the two cells around the character are always left empty.  Please see Figure 1 for further clarification on this map layout.  Bombs can destroy boxes. However, bombs cannot destroy walls. Additionally, there are powerups hidden in some of the boxes meant to aid the player in their mission. These powerups can be accessed by capturing their associated boxes within the blast radius of a dropped bomb and then walking over them. While the original game incorporates a variety of enemies and powerups, ours has one type of enemy, whose only ability is eliminating the player by contact, and two types of powerups - one being the ability to drop extra bombs simultaneously, and the other increasing the blast radius of a player’s dropped bombs by one.\par
 
 
-\vspace{\baselineskip}
-
 
 %%%%%%%%%%%%%%%%%%%% Figure/Image No: 1 starts here %%%%%%%%%%%%%%%%%%%%
 
 \begin{figure}[H]
-\advance\leftskip 0.0in		\includegraphics[width=2.81in,height=2.14in]{./media/image1.png}
+\advance\leftskip 0.0in		\includegraphics[width=2.36in,height=1.79in]{./media/image1.png}
 \end{figure}
 
 
@@ -144,18 +154,6 @@ Bomberman\ is\ a strategy-based video game in which the player, who initially sp
 
 Figure 1. Map layout with boxes represented as brick squares and indestructible walls as solid gray squares.\par
 
-
-\vspace{\baselineskip}
-
-\vspace{\baselineskip}
-
-\vspace{\baselineskip}
-
-\vspace{\baselineskip}
-
-\vspace{\baselineskip}
-
-\vspace{\baselineskip}
 
 \vspace{\baselineskip}
 \textbf{\uline{Our Implementation:}}\par
@@ -187,7 +185,7 @@ As briefly mentioned before, there are a few ways in which our implementation di
 %%%%%%%%%%%%%%%%%%%% Figure/Image No: 2 starts here %%%%%%%%%%%%%%%%%%%%
 
 \begin{figure}[H]
-\advance\leftskip 0.0in		\includegraphics[width=2.94in,height=2.21in]{./media/image2.png}
+\advance\leftskip 0.0in		\includegraphics[width=2.43in,height=1.83in]{./media/image2.png}
 \end{figure}
 
 
@@ -221,8 +219,10 @@ Throughout the process of implementing the game, there were a number of tradeoff
 
 
 \vspace{\baselineskip}
-The player object itself is implemented in gameobj.ml. It inherits from the moveable class, because it was necessary to make enemies, which would have similar functionality to the player with only a few differences. The player was special in that it would hold information about the number of bombs that it can drop at once and the radius of the bombs that it can drop.\par
+The player object itself is implemented in gameobj.ml. It inherits from the moveable class, because it was necessary to make enemies, which would have similar functionality to the player with only a few differences. The player was special in that it would hold information about the number of bombs that it can drop at once and the radius of the bombs that it can drop. \par
 
+
+\vspace{\baselineskip}
 Moveable objects, namely the player and enemies, have a significantly different structure from all the other game objects. Whereas boxes, walls, bombs, and exploding tiles are all stored in an array of the game map, the player and enemies are stored separately from this array. We knew that parts of the map would only ever stay within their square of the grid that makes up the map, therefore we were able to implement the map as an array of objects that existed within a small square. If we were to assign an enemy to any of these squares, we would lose the object (e.g. a box) that was previously stored there. Although we could have done this without losing information by using a more complicated structure for the components of the array, it would have been harder to animate the enemies and players movement through the grid. So we instead decided to store the moveable objects separate from the map itself, allowing them to move freely of the coordinate system we created for the other map. We still use that coordinate system to implement the collisions between all objects, but the implementation of the moveable objects is completely disjoint from the game Array and could exist without it.\par
 
 
