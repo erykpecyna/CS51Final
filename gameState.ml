@@ -14,8 +14,8 @@ module ObjSet =	Set.Make (struct
                             let compare = compare
                           end) ;;
 
-(* Generates a new map with boxes placed to allow for a proper start for all
-  players. Takes arguments for the size of the map. *)
+(* Generates a new map with boxes placed to allow for a proper start for the
+  player. Takes arguments for the size of the map. *)
 let generateMap (w : int) (* width of game map *)
                 (h : int) (* height of game map *)
                 (screenwidth : int)
