@@ -169,6 +169,7 @@ class enemy (p : point) (rad : int) (w : int) (h : int) =
     val mutable even = false
     val dirlist = ['L'; 'R'; 'U'; 'D']
 
+    (* Finds the next movement direction of the enemy *)
     method getdir =
       let getmatch x =
         match x with

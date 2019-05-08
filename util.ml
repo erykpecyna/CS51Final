@@ -1,6 +1,5 @@
 (*.............................................................................
     Utility Objects 
-
     These classes will be used to compose game objects. They exist to simplify
     the code and keep some basic functions required for all objects in one
     place for easy debugging.
