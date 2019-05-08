@@ -2,6 +2,7 @@ open Graphics ;;
 open Gameobj ;;
 open Util ;;
 open GameState ;;
+open Config ;;
 
 (*.............................................................................
   Game 
@@ -17,7 +18,7 @@ let rec delay (sec: float) : unit =
 (* Used to open a new game window *)
 let window_initialize () =
   open_graph "";
-  resize_window 1200 897;
+  resize_window sCREENWIDTH sCREENHEIGHT;
   auto_synchronize false;
   display_mode false;;
 
@@ -32,7 +33,7 @@ let run state : unit =
                   done in
 
   (* Make some Enemies *)
-  state#makeEnemies 3;
+  state#makeEnemies nUMENEMIES;
 
   (* Open a graphics window and start the game loop *)
   window_initialize();
@@ -53,23 +54,23 @@ let run state : unit =
       less due to runtime *)
     clear_graph ();
     state#drawState;
-    delay 0.05 ;
+    delay uPDATEDELAY ;
     synchronize ()
   done ;
 
   (* Game Over Screen *)
-  delay 0.5;
+  delay eNDDELAY;
   clear_graph ();
   set_color black;
-  fill_rect 0 0 1200 900;
+  fill_rect 0 0 sCREENWIDTH sCREENHEIGHT;
   set_color white;
-  moveto 600 450;
+  moveto cENTERX cENTERY;
   if state#won then
     draw_string "Game Won"
   else draw_string "Game Over";
   synchronize ();
-  delay 1.5
+  delay cLOSEDDELAY
 
 let _ =
-  let newState = new state 15 13 1200 897 in
+  let newState = new state mAPWIDTH mAPHEIGHT in
   run newState

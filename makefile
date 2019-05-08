@@ -1,4 +1,4 @@
-all: game gameobj util gameState
+all: game gameobj util gameState config
 
 game: game.ml
 	ocamlbuild game.byte
@@ -11,6 +11,9 @@ gameState: gameState.ml
 
 util: util.ml
 	ocamlbuild util.byte
+
+config: config.ml
+	ocamlbuild config.byte
 
 clean:
 	rm -rf _build *.byte
