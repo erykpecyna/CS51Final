@@ -263,6 +263,10 @@ The first minute and ten seconds demonstrates how the game is won, with 0:16 - 0
 
 This second video demonstrates the other way in which the game is lost (getting caught in the blast radius of your bomb) and further illustrates how the enhancements work.\par
 
+\href{https://youtu.be/Zp1zKCZbioI}{\textcolor[HTML]{1155CC}{\uline{https://youtu.be/Zp1zKCZbioI}}}\par
+
+This video demonstrates the effect different constants have on the game.\par
+
 
 \vspace{\baselineskip}
 \textbf{\uline{$``$Future PSET$"$  Add-Ons}}\par
@@ -271,9 +275,43 @@ Given the instructions of treating this project as a $``$future PSET,$"$  here a
 
 
 \vspace{\baselineskip}
+\textbf{\uline{Post-Meeting Modifications:}}\par
+
+The final project meeting with Professor Shieber and the course heads opened our eyes to a few design-related issues and parts of our implementation that would not necessarily work as well as the project scales up.\par
+
+
+\vspace{\baselineskip}
+For instance, there were a number of places in our code where we utilized $``$magic numbers,$"$  or constant numbers with no clear explanation as to where they came from. We fixed this by making a configuration file (called $``$config.ml$"$ ) with all of the constants that we used, making clear what these constants are supposed to represent. This way, if we ever decide to change these constants, there is an established place for doing so, and if there are multiple places in which a constant is used, it is much easier to make that change. Through making the config.ml file and the separation of the $``$magic numbers,$"$  we actually were able to easily scale the map without having to specifically calculate the dimensions of the screen every time. \par
+
+
+\vspace{\baselineskip}
+There were also a number of opportunities in our code to get rid of side effects that augmented the impurity of our code. For example, when creating the list of enemies, instead of keeping the for loop that we initially used, we utilized the init function in OCaml’s List module. Changes such as these definitely helped make our code not only look much more elegant but also more side-effect free.\par
+
+
+\vspace{\baselineskip}
+\textbf{\uline{Post-Meeting Deliberations:}}\par
+
+A major fix that we would want to implement in the future is the abstraction barrier of the movement in pixels. This would entail altering the generateMap function such that it takes the size of the each cell in the map as an input. Every function that deals with the actual pixel movement of the objects will instead make a call to the $``$convertToPixel$"$  function that will convert the movement input of (1,0) to (80,0) if the length of each cell in the game is 80, and then the object would move by that much. The purpose of this, as expressed by Professor Shieber, would be to not have to deal with the integer division that we had to do in the generateMap function (which could easily lead to rounding errors).\par
+
+
+\vspace{\baselineskip}
+Another concept that we could analyze the tradeoffs of is the implementation of objects in a way such that all of the objects know the locations of other objects due to a mutable value that represents the map array in each object. This would make our state object much simpler but would make the game objects much more complicated. This would also entail the use of event listeners, which would facilitate the interaction between the user and the machine via keyboard events, as well as the interaction between the various objects utilized in our code. \par
+
+
+\vspace{\baselineskip}
+In general, there were a few opportunities in our code for us to utilize the edict of abstraction more, which would especially help if we decided to scale the project up. For instance, a way in which this notion could be implemented is in events that involve ticking. We have two functions that deal with $``$tick$"$  events (events that rely on a timer) - one for bombs and one for exploding. However, we could instead have a global tick and then keep track of at what point during the ticking that each object has to do what it needs to do, which would definitely help if we decided to have more objects rely on timing (for example, having powerups only be active for a limited amount of time). However, because these are the only two objects that would rely on timing in this game, it made more sense to use this simpler implementation rather than add ticking to all objects. Even if we were to add ticking to all objects we would still, in some way, have to independently track each bomb object to differentiate between separate timings for explosions. While this might be possible to implement in OCaml, we could not figure out how to allow the game objects stored in the gameState file to have access to anything inside of the gameState file. Listeners seem like they would be a fix, but they require events that involve inter-thread communication that we do not know how to implement. Other languages with more robust object-oriented features such as Java allow for more interaction between objects in the form of passing certain methods as arguments, but we could not figure out how to do this in OCaml.\par
+
+
+\vspace{\baselineskip}
+During the presentation, the length of some of our methods was discussed, specifically movePlayer and moveEnemies in gameState. Although the methods are lengthy, over half of each are helper functions. In the code’s current state, it would be difficult to move these functions away from the methods that they are used in. However, if we restructured our code and built it along the guidelines suggested by Professor Shieber, we would most likely move a lot of this functionality to the game objects which should result in a cleaner gameState.\par
+
+
+\vspace{\baselineskip}
+
+\vspace{\baselineskip}
 \textbf{\uline{Conclusion:}}\par
 
-In essence, in creating Bomberman with OCaml, we discovered that all of the edicts and programming principles that we became acquainted with throughout the semester were imperative (no pun intended) to writing not only working code, but also clean, elegant, and efficient code that we could truly be proud of. We also became more aware of certain important concepts when working on the same code including branches in git and the idea that the master branch should always have a working version of the game. The branches helped us separate work such that our time working on the project could be maximized. One person would be working on the powerup objects while another would be working on how the map changes when the powerup is picked up, for example. Overall, we spent roughly 48 person-hours on the implementation of BomberCaml and we are happy with the working game that we have created.\par
+In essence, in creating Bomberman with OCaml, we discovered that all of the edicts and programming principles that we became acquainted with throughout the semester were imperative (no pun intended) to writing not only working code, but also clean, elegant, and efficient code that we could truly be proud of. We also became more aware of certain important concepts when working on the same code including branches in git and the idea that the master branch should always have a working version of the game. The branches helped us separate work such that our time working on the project could be maximized. One person would be working on the powerup objects while another would be working on how the map changes when the powerup is picked up, for example. Overall, we spent roughly 52 person-hours on the implementation of BomberCaml and we are happy with the working game that we have created.\par
 
 
 \printbibliography
